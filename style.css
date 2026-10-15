@@ -1,7 +1,204 @@
-body {
-    background-color: #0B0E14;
-    color: #FFFFFF;
-    font-family: 'Inter', sans-serif;
+/* ================================
+   1. DESIGN TOKENS (CSS Variables)
+   ================================ */
+:root {
+    --bg-dark: #0B0E14;
+    --bg-panel: #131823;
+    --bg-panel-hover: #1C2331;
+    --border-color: #232A3B;
+    --text-main: #FFFFFF;
+    --text-muted: #8B94A7;
+    --accent-blue: #2962FF;
+    --accent-green: #00C076;
+    --accent-red: #FF3B30;
+    --font-family: 'Inter', sans-serif;
+}
+
+/* ================================
+   2. GLOBAL RESET
+   ================================ */
+* {
     margin: 0;
-    padding: 40px;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--font-family);
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-size: 14px;
+}
+
+/* ================================
+   3. TOP NAVIGATION
+   ================================ */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    background-color: var(--bg-panel);
+    border-bottom: 1px solid var(--border-color);
+    height: 60px;
+    flex-shrink: 0;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.logo i {
+    color: var(--accent-blue);
+}
+
+.top-nav-links {
+    display: flex;
+    gap: 24px;
+}
+.top-nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+.top-nav-links a.active,
+.top-nav-links a:hover {
+    color: var(--text-main);
+}
+
+.user-controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.account-info {
+    text-align: right;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+.account-info .balance {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-top: 2px;
+}
+.btn-deposit {
+    background-color: var(--accent-blue);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s ease;
+}
+.btn-deposit:hover {
+    background-color: #1E4FD6;
+}
+
+/* ================================
+   4. APP CONTAINER
+   ================================ */
+.app-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ================================
+   5. SIDEBAR
+   ================================ */
+.sidebar {
+    width: 70px;
+    background-color: var(--bg-panel);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    flex-shrink: 0;
+}
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 11px;
+    padding: 15px 0;
+    width: 100%;
+    transition: color 0.2s ease;
+    position: relative;
+}
+.nav-item i {
+    font-size: 20px;
+}
+.nav-item:hover {
+    color: var(--text-main);
+}
+.nav-item.active {
+    color: var(--accent-blue);
+}
+.nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 3px;
+    background-color: var(--accent-blue);
+}
+
+/* ================================
+   6. WORKSPACE
+   ================================ */
+.workspace {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    gap: 15px;
+    overflow-y: auto;
+}
+
+.workspace-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    border: 2px dashed var(--border-color);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+/* ================================
+   7. SCROLLBAR STYLING
+   ================================ */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+::-webkit-scrollbar-thumb {
+    background: #2A3441;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #3A4557;
 }
