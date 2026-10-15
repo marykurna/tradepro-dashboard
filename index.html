@@ -4,11 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TradePro Dashboard</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Our Styles -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>TradePro Dashboard</h1>
-    <p>Project initialized. Ready to build.</p>
+
+    <!-- ================================
+         TOP NAVIGATION
+         ================================ -->
+    <nav class="top-nav">
+        <div class="logo">
+            <i class="fa-solid fa-chart-line"></i> TradePro
+        </div>
+        <div class="top-nav-links">
+            <a href="#" class="active">Trading</a>
+            <a href="#">AI Signals</a>
+            <a href="#">My Trades</a>
+            <a href="#">Wallet</a>
+            <a href="#">Profile</a>
+            <a href="#">Settings</a>
+        </div>
+        <div class="user-controls">
+            <div class="account-info">
+                <div>Demo Account <i class="fa-solid fa-chevron-down" style="font-size:10px;"></i></div>
+                <div class="balance">$1,000.00</div>
+            </div>
+            <button class="btn-deposit">Deposit</button>
+        </div>
+    </nav>
+
+    <!-- ================================
+         MAIN APP CONTAINER
+         ================================ -->
+    <div class="app-container">
+
+        <!-- LEFT SIDEBAR -->
+        <aside class="sidebar">
+            <a href="#" class="nav-item active">
+                <i class="fa-solid fa-chart-simple"></i>
+                <span>Trading</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-robot"></i>
+                <span>AI Signals</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>My Trades</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-wallet"></i>
+                <span>Wallet</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-user"></i>
+                <span>Profile</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+            </a>
+        </aside>
+
+        <!-- MAIN WORKSPACE -->
+        <main class="workspace">
+            <div class="workspace-placeholder">
+                <i class="fa-solid fa-hammer" style="margin-right: 10px;"></i>
+                Workspace ready — next we add Asset Tabs &amp; Chart
+            </div>
+        </main>
+
+    </div>
+
+    <!-- Our Script -->
     <script src="script.js"></script>
 </body>
 </html>
