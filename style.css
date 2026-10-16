@@ -282,6 +282,235 @@ body {
     color: var(--accent-red);
 }
 
+/* ================================
+   9. CHART PANEL + TRADE CONTROLS
+   ================================ */
+.main-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    flex: 1;
+    min-height: 400px;
+}
+
+.chart-panel {
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.chart-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.chart-info h2 {
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--text-main);
+}
+
+.badge-green {
+    background: rgba(0, 192, 118, 0.15);
+    color: var(--accent-green);
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+/* Chart Area */
+.chart-area {
+    flex: 1;
+    position: relative;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    min-height: 380px;
+    overflow: hidden;
+}
+
+/* SVG Chart Lines */
+.chart-svg {
+    width: 100%;
+    height: 70%;
+    position: absolute;
+    bottom: 20%;
+    left: 0;
+}
+
+.chart-line-price {
+    fill: none;
+    stroke: var(--accent-green);
+    stroke-width: 2;
+}
+
+.chart-line-ma {
+    fill: none;
+    stroke: #8B94A7;
+    stroke-width: 1;
+    stroke-dasharray: 4;
+}
+
+/* Price Marker */
+.price-marker {
+    position: absolute;
+    right: 0;
+    top: 40%;
+    background-color: var(--accent-blue);
+    color: white;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px 0 0 4px;
+    font-weight: 600;
+    z-index: 2;
+}
+
+/* AI Signal Bubble */
+.signal-bubble {
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    background-color: var(--bg-panel);
+    border: 1px solid var(--accent-green);
+    color: var(--accent-green);
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 4px 12px rgba(0,192,118,0.2);
+    animation: pulse 2s infinite;
+    z-index: 3;
+    text-align: center;
+    line-height: 1.3;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(0, 192, 118, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(0, 192, 118, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 192, 118, 0); }
+}
+
+/* Trade Controls */
+.trade-controls {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 200px;
+    background-color: rgba(19, 24, 35, 0.95);
+    border-left: 1px solid var(--border-color);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    backdrop-filter: blur(2px);
+    z-index: 4;
+}
+
+.trade-controls label {
+    display: block;
+    margin-bottom: 2px;
+}
+
+.input-group {
+    display: flex;
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.input-group input {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 10px;
+    flex: 1;
+    width: 100%;
+    outline: none;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.input-group button {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 0 10px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.input-group button:hover {
+    color: white;
+}
+
+.payout-info {
+    text-align: center;
+    margin: 10px 0;
+}
+
+.payout-info .percent {
+    color: var(--accent-green);
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.payout-info .amount {
+    color: var(--accent-green);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.btn-trade {
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    transition: opacity 0.2s ease;
+}
+
+.btn-trade:hover {
+    opacity: 0.9;
+}
+
+.btn-call {
+    background-color: var(--accent-green);
+}
+
+.btn-put {
+    background-color: var(--accent-red);
+}
+
 .btn-add {
     background: var(--bg-panel);
     border: 1px solid var(--border-color);

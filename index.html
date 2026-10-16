@@ -118,12 +118,93 @@
                 </button>
             </div>
 
-            <!-- Placeholder for chart (next step) -->
-            <div class="workspace-placeholder">
-                <i class="fa-solid fa-hammer" style="margin-right: 10px;"></i>
-                Next: Chart Panel &amp; Trade Controls
-            </div>
+                        <!-- ================================
+                 CHART PANEL + TRADE CONTROLS
+                 ================================ -->
+            <div class="main-grid">
 
+                <!-- Chart Panel -->
+                <div class="chart-panel">
+                    <div class="chart-header">
+                        <div class="chart-info">
+                            <img src="https://flagcdn.com/w20/eu.png" class="asset-flag" alt="EU">
+                            <h2>EUR/USD <i class="fa-solid fa-chevron-down" style="font-size:12px;"></i></h2>
+                            <span class="badge-green">82%</span>
+                        </div>
+                        <div class="chart-info" style="color: var(--text-muted); font-size: 13px;">
+                            <span>5m <i class="fa-solid fa-chevron-down" style="font-size:10px;"></i></span>
+                            <i class="fa-solid fa-chart-line"></i>
+                            <i class="fa-solid fa-expand"></i>
+                        </div>
+                    </div>
+
+                    <!-- Chart Area -->
+                    <div class="chart-area">
+                        <!-- Price Marker -->
+                        <div class="price-marker">1.09732</div>
+
+                        <!-- AI Signal Bubble -->
+                        <div class="signal-bubble">
+                            <i class="fa-solid fa-robot"></i> AI Signal
+                            <br>CALL
+                        </div>
+
+                        <!-- SVG Chart -->
+                        <svg class="chart-svg" viewBox="0 0 1000 400" preserveAspectRatio="none">
+                            <path d="M 0 300 Q 150 350, 300 250 T 600 200 T 900 150" class="chart-line-ma" />
+                            <path d="M 0 350 Q 100 380, 200 280 T 400 320 T 600 200 T 800 180 T 1000 100" class="chart-line-price" />
+
+                            <!-- Green candles -->
+                            <rect x="50" y="320" width="10" height="30" fill="#00C076" />
+                            <rect x="150" y="280" width="10" height="40" fill="#00C076" />
+                            <rect x="300" y="300" width="10" height="20" fill="#00C076" />
+                            <rect x="500" y="220" width="10" height="50" fill="#00C076" />
+                            <rect x="700" y="180" width="10" height="40" fill="#00C076" />
+                            <rect x="850" y="140" width="10" height="30" fill="#00C076" />
+
+                            <!-- Red candles -->
+                            <rect x="100" y="300" width="10" height="40" fill="#FF3B30" />
+                            <rect x="200" y="260" width="10" height="50" fill="#FF3B30" />
+                            <rect x="400" y="280" width="10" height="30" fill="#FF3B30" />
+                            <rect x="600" y="200" width="10" height="40" fill="#FF3B30" />
+                            <rect x="750" y="170" width="10" height="20" fill="#FF3B30" />
+                        </svg>
+
+                        <!-- Trade Controls Overlay -->
+                        <div class="trade-controls">
+                            <div>
+                                <label style="font-size: 12px; color: var(--text-muted);">Amount</label>
+                                <div class="input-group" style="margin-top: 5px;">
+                                    <button><i class="fa-solid fa-minus"></i></button>
+                                    <input type="text" value="$ 50">
+                                    <button><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label style="font-size: 12px; color: var(--text-muted);">Time</label>
+                                <div class="input-group" style="margin-top: 5px;">
+                                    <input type="text" value="16:40">
+                                    <button><i class="fa-solid fa-chevron-down"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="payout-info">
+                                <div class="percent">82%</div>
+                                <div class="amount">+$91.00</div>
+                            </div>
+
+                            <button class="btn-trade btn-call">
+                                <i class="fa-solid fa-arrow-up"></i> Call
+                            </button>
+                            <button class="btn-trade btn-put">
+                                <i class="fa-solid fa-arrow-down"></i> Put
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </main>
 
     </div>
