@@ -297,3 +297,162 @@ tabButtons.forEach((btn) => {
         renderTab(btn.dataset.tab);
     });
 });
+
+// ================================
+// 10. CLICKABLE ASSET TABS — switch active pair
+// ================================
+const ASSET_DATA = {
+    "EUR/USD": {
+        flag: "https://flagcdn.com/w20/eu.png",
+        icon: null,
+        winRate: "82%",
+        signal: "CALL",
+        signalClass: "up",
+        signalIcon: "fa-arrow-up",
+        entry: "1.09732",
+        target: "1.09810",
+        stop: "1.09670",
+        basePrice: 1.09732,
+        payout: 82,
+    },
+    "GBP/USD": {
+        flag: "https://flagcdn.com/w20/gb.png",
+        icon: null,
+        winRate: "82%",
+        signal: "PUT",
+        signalClass: "down",
+        signalIcon: "fa-arrow-down",
+        entry: "1.27210",
+        target: "1.27050",
+        stop: "1.27320",
+        basePrice: 1.27210,
+        payout: 82,
+    },
+    "BTC/USD": {
+        flag: null,
+        icon: "fa-brands fa-bitcoin",
+        iconColor: "#F7931A",
+        winRate: "78%",
+        signal: "CALL",
+        signalClass: "up",
+        signalIcon: "fa-arrow-up",
+        entry: "67,450.00",
+        target: "67,812.50",
+        stop: "67,200.00",
+        basePrice: 67450.00,
+        payout: 78,
+    },
+    "XAU/USD": {
+        flag: null,
+        icon: "fa-solid fa-coins",
+        iconColor: "#FFD700",
+        winRate: "80%",
+        signal: "PUT",
+        signalClass: "down",
+        signalIcon: "fa-arrow-down",
+        entry: "2,318.50",
+        target: "2,305.00",
+        stop: "2,325.00",
+        basePrice: 2318.50,
+        payout: 80,
+    },
+    "USD/JPY": {
+        flag: "https://flagcdn.com/w20/us.png",
+        icon: null,
+        winRate: "79%",
+        signal: "CALL",
+        signalClass: "up",
+        signalIcon: "fa-arrow-up",
+        entry: "149.85",
+        target: "150.12",
+        stop: "149.60",
+        basePrice: 149.85,
+        payout: 79,
+    }
+};
+
+function switchAsset(assetName) {
+    const data = ASSET_DATA[assetName];
+    if (!data) return;
+
+    state.currentAsset = assetName;
+    state.currentFlag = data.flag || "";
+    state.currentPrice = data.basePrice;
+    state.currentPayout = data.payout;
+    state.currentType = data.signal.toLowerCase();
+
+    // Update asset tab active state
+    document.querySelectorAll(".asset-tab").forEach((tab) => {
+        tab.classList.toggle("active", tab.dataset.asset === assetName);
+    });
+
+    // Update chart header
+    const chartInfo = document.querySelector(".chart-header .chart-info");
+    if (chartInfo) {
+        const h2 = chartInfo.querySelector("h2");
+        const badge = chartInfo.querySelector(".badge-green");
+        const oldFlag = chartInfo.querySelector(".asset-flag");
+        const oldIcon = chartInfo.querySelector(".fa-brands, .fa-solid.fa-coins");
+
+        if (oldFlag) oldFlag.remove();
+        if (oldIcon) oldIcon.remove();
+
+        if (data.flag) {
+            const img = document.createElement("img");
+            img.src = data.flag;
+            img.className = "asset-flag";
+            img.alt = assetName;
+            chartInfo.insertBefore(img, h2);
+        } else if (data.icon) {
+            const i = document.createElement("i");
+            i.className = data.icon;
+            i.style.color = data.iconColor || "#FFF";
+            i.style.fontSize = "16px";
+            chartInfo.insertBefore(i, h2);
+        }
+
+        if (h2) h2.innerHTML = `${assetName} <i class="fa-solid fa-chevron-down" style="font-size:12px;"></i>`;
+        if (badge) badge.textContent = data.winRate;
+    }
+
+    // Update signal bubble
+    const bubble = document.querySelector(".signal-bubble");
+    if (bubble) {
+        bubble.innerHTML = `<i class="fa-solid fa-robot"></i> AI Signal<br>${data.signal}`;
+    }
+
+    // Update AI panel signal direction
+    const signalDir = document.querySelector(".signal-direction");
+    if (signalDir) {
+        signalDir.style.color = data.signal === "CALL" ? "var(--accent-green)" : "var(--accent-red)";
+        signalDir.innerHTML = `<i class="fa-solid ${data.signalIcon}"></i> ${data.signal}`;
+    }
+
+    const winBadge = document.querySelector(".signal-details .badge-green");
+    if (winBadge) winBadge.textContent = `${data.winRate} Win Rate`;
+
+    const metaValues = document.querySelectorAll(".signal-meta span:nth-child(2)");
+    if (metaValues.length >= 3) {
+        metaValues[0].textContent = data.entry;
+        metaValues[1].textContent = data.target;
+        metaValues[2].textContent = data.stop;
+    }
+
+    // Update payout display
+    const payoutPercent = document.querySelector(".payout-info .percent");
+    if (payoutPercent) payoutPercent.textContent = data.winRate;
+
+    // Update price marker
+    if (priceMarker) priceMarker.textContent = data.basePrice.toFixed(2);
+
+    console.log("✅ Switched to", assetName);
+}
+
+// Wire up asset tab clicks
+document.querySelectorAll(".asset-tab").forEach((tab) => {
+    tab.addEventListener("click", (e) => {
+        if (e.target.closest(".tab-close")) return;
+        const asset = tab.dataset.asset;
+        if (asset) switchAsset(asset);
+    });
+});
