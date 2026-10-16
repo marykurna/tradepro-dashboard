@@ -527,3 +527,156 @@ body {
     color: var(--text-main);
     border-color: var(--accent-blue);
 }
+
+/* ================================
+   10. RIGHT AI SIGNAL PANEL
+   ================================ */
+.main-grid {
+    /* Override previous single-column to 2-column */
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 15px;
+    flex: 1;
+    min-height: 400px;
+}
+
+.right-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 100%;
+}
+
+.panel-box {
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+}
+
+/* AI Signal Card */
+.ai-signal-card {
+    background: linear-gradient(180deg, rgba(41, 98, 255, 0.1) 0%, rgba(19, 24, 35, 1) 100%);
+    border: 1px solid rgba(41, 98, 255, 0.3);
+}
+
+.ai-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.ai-header span {
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--accent-green);
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 8px var(--accent-green);
+    animation: status-pulse 2s infinite;
+}
+
+@keyframes status-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+.signal-details {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.signal-direction {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent-green);
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.signal-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.btn-view-details {
+    width: 100%;
+    background-color: var(--accent-blue);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s ease;
+}
+
+.btn-view-details:hover {
+    background-color: #1E4FD6;
+}
+
+/* AI Chat Input */
+.ai-chat-input {
+    margin-top: auto;
+    width: 100%;
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.ai-chat-input input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 10px;
+    outline: none;
+    font-size: 13px;
+}
+
+.ai-chat-input input::placeholder {
+    color: var(--text-muted);
+}
+
+.ai-chat-input button {
+    background: var(--accent-blue);
+    border: none;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+}
+
+.ai-chat-input button:hover {
+    background-color: #1E4FD6;
+}

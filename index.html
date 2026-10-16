@@ -71,7 +71,6 @@
         </aside>
 
         <!-- MAIN WORKSPACE -->
-                <!-- MAIN WORKSPACE -->
         <main class="workspace">
 
             <!-- ================================
@@ -118,8 +117,8 @@
                 </button>
             </div>
 
-                        <!-- ================================
-                 CHART PANEL + TRADE CONTROLS
+            <!-- ================================
+                 MAIN GRID: CHART + AI PANEL
                  ================================ -->
             <div class="main-grid">
 
@@ -140,21 +139,17 @@
 
                     <!-- Chart Area -->
                     <div class="chart-area">
-                        <!-- Price Marker -->
                         <div class="price-marker">1.09732</div>
 
-                        <!-- AI Signal Bubble -->
                         <div class="signal-bubble">
                             <i class="fa-solid fa-robot"></i> AI Signal
                             <br>CALL
                         </div>
 
-                        <!-- SVG Chart -->
                         <svg class="chart-svg" viewBox="0 0 1000 400" preserveAspectRatio="none">
                             <path d="M 0 300 Q 150 350, 300 250 T 600 200 T 900 150" class="chart-line-ma" />
                             <path d="M 0 350 Q 100 380, 200 280 T 400 320 T 600 200 T 800 180 T 1000 100" class="chart-line-price" />
 
-                            <!-- Green candles -->
                             <rect x="50" y="320" width="10" height="30" fill="#00C076" />
                             <rect x="150" y="280" width="10" height="40" fill="#00C076" />
                             <rect x="300" y="300" width="10" height="20" fill="#00C076" />
@@ -162,7 +157,6 @@
                             <rect x="700" y="180" width="10" height="40" fill="#00C076" />
                             <rect x="850" y="140" width="10" height="30" fill="#00C076" />
 
-                            <!-- Red candles -->
                             <rect x="100" y="300" width="10" height="40" fill="#FF3B30" />
                             <rect x="200" y="260" width="10" height="50" fill="#FF3B30" />
                             <rect x="400" y="280" width="10" height="30" fill="#FF3B30" />
@@ -204,9 +198,60 @@
                     </div>
                 </div>
 
-            </div>
-        </main>
+                <!-- ================================
+                     RIGHT AI SIGNAL PANEL
+                     ================================ -->
+                <div class="right-panel">
+                    <div class="panel-box ai-signal-card">
+                        <div class="ai-header">
+                            <span><i class="fa-solid fa-robot" style="color: var(--accent-blue);"></i> AI Signal Bot</span>
+                            <span class="status-dot"></span>
+                        </div>
 
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">
+                            I've analyzed the market. Here is my current recommendation for EUR/USD (5m):
+                        </p>
+
+                        <div class="signal-details">
+                            <div class="signal-direction">
+                                <i class="fa-solid fa-arrow-up"></i> CALL
+                            </div>
+                            <div class="badge-green" style="display:inline-block; margin-bottom: 10px;">82% Win Rate</div>
+
+                            <div class="signal-meta">
+                                <span>Entry Price</span>
+                                <span style="color:white; font-weight:600;">1.09732</span>
+                            </div>
+                            <div class="signal-meta">
+                                <span>Target Price</span>
+                                <span style="color:white; font-weight:600;">1.09810</span>
+                            </div>
+                            <div class="signal-meta">
+                                <span>Stop Loss</span>
+                                <span style="color:white; font-weight:600;">1.09670</span>
+                            </div>
+                        </div>
+
+                        <div style="font-size: 12px; color: var(--text-muted); margin: 15px 0; line-height: 1.5;">
+                            <strong>Why?</strong><br>
+                            Price is above the 50 EMA, showing bullish momentum. RSI is at 62 and forming higher lows. Trend remains upward.
+                        </div>
+
+                        <button class="btn-view-details">
+                            <i class="fa-solid fa-rotate"></i> New Signal
+                        </button>
+                    </div>
+
+                    <!-- AI Chat Input -->
+                    <div class="ai-chat-input">
+                        <input type="text" placeholder="Ask the AI bot...">
+                        <button><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
     </div>
 
     <!-- Our Script -->
