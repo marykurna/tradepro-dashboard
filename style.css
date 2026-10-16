@@ -173,6 +173,7 @@ body {
     padding: 15px;
     gap: 15px;
     overflow-y: auto;
+    min-height: 0;   /* ← add this */
 }
 
 .workspace-placeholder {
@@ -536,10 +537,10 @@ body {
     display: grid;
     grid-template-columns: 1fr 300px;
     gap: 15px;
-    flex: 1;
-    min-height: 400px;
+    min-height: 450px;
+    height: 480px;
+    flex-shrink: 0;
 }
-
 .right-panel {
     display: flex;
     flex-direction: column;
@@ -687,7 +688,7 @@ body {
 .bottom-panel {
     display: flex;
     gap: 15px;
-    height: 200px;
+    height: 230px;
     flex-shrink: 0;
 }
 
