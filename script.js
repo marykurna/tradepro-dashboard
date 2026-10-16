@@ -213,3 +213,87 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 console.log("🎯 Script initialized with all features");
+
+// ================================
+// 9. BOTTOM TABS — switch table content
+// ================================
+const tabButtons = document.querySelectorAll(".tabs-header .tab-btn");
+const tableHead = document.getElementById("tableHead");
+
+const TAB_CONTENT = {
+    open: {
+        headers: ["Asset", "Type", "Amount", "Open Price", "Current Price", "Payout", "Status"],
+        rows: [
+            { asset: "EUR/USD", flag: "https://flagcdn.com/w20/eu.png", type: "Call", typeClass: "up", typeIcon: "fa-arrow-up", amount: "$50", open: "1.09732", current: "1.09765", payout: "82%", status: "In Progress", statusClass: "status" },
+            { asset: "GBP/USD", flag: "https://flagcdn.com/w20/gb.png", type: "Put", typeClass: "down", typeIcon: "fa-arrow-down", amount: "$30", open: "1.27210", current: "1.27180", payout: "82%", status: "In Progress", statusClass: "status" },
+            { asset: "BTC/USD", flag: "", icon: "fa-brands fa-bitcoin", iconColor: "#F7931A", type: "Call", typeClass: "up", typeIcon: "fa-arrow-up", amount: "$20", open: "67,450.00", current: "67,812.50", payout: "78%", status: "In Progress", statusClass: "status" }
+        ]
+    },
+    history: {
+        headers: ["Asset", "Type", "Amount", "Result", "P/L", "Date"],
+        rows: [
+            { asset: "EUR/USD", flag: "https://flagcdn.com/w20/eu.png", type: "Call", typeClass: "up", typeIcon: "fa-arrow-up", amount: "$50", result: "WIN", resultClass: "status status-win", pl: "+$41.00", plClass: "up", date: "Oct 16, 14:32" },
+            { asset: "GBP/USD", flag: "https://flagcdn.com/w20/gb.png", type: "Put", typeClass: "down", typeIcon: "fa-arrow-down", amount: "$30", result: "LOSS", resultClass: "status status-loss", pl: "-$30.00", plClass: "down", date: "Oct 16, 14:18" },
+            { asset: "BTC/USD", flag: "", icon: "fa-brands fa-bitcoin", iconColor: "#F7931A", type: "Call", typeClass: "up", typeIcon: "fa-arrow-up", amount: "$20", result: "WIN", resultClass: "status status-win", pl: "+$15.60", plClass: "up", date: "Oct 16, 13:55" },
+            { asset: "XAU/USD", flag: "", icon: "fa-solid fa-coins", iconColor: "#FFD700", type: "Put", typeClass: "down", typeIcon: "fa-arrow-down", amount: "$25", result: "WIN", resultClass: "status status-win", pl: "+$20.00", plClass: "up", date: "Oct 16, 13:40" },
+            { asset: "EUR/USD", flag: "https://flagcdn.com/w20/eu.png", type: "Put", typeClass: "down", typeIcon: "fa-arrow-down", amount: "$40", result: "LOSS", resultClass: "status status-loss", pl: "-$40.00", plClass: "down", date: "Oct 16, 13:12" }
+        ]
+    },
+    signals: {
+        headers: ["Asset", "Direction", "Win Rate", "Time", "Expiry"],
+        rows: [
+            { asset: "EUR/USD", flag: "https://flagcdn.com/w20/eu.png", direction: "CALL", dirClass: "up", typeIcon: "fa-arrow-up", payout: "82%", time: "16:32", status: "5 min" },
+            { asset: "GBP/USD", flag: "https://flagcdn.com/w20/gb.png", direction: "PUT", dirClass: "down", typeIcon: "fa-arrow-down", payout: "82%", time: "16:21", status: "5 min" },
+            { asset: "BTC/USD", flag: "", icon: "fa-brands fa-bitcoin", iconColor: "#F7931A", direction: "CALL", dirClass: "up", typeIcon: "fa-arrow-up", payout: "78%", time: "16:14", status: "5 min" },
+            { asset: "XAU/USD", flag: "", icon: "fa-solid fa-coins", iconColor: "#FFD700", direction: "PUT", dirClass: "down", typeIcon: "fa-arrow-down", payout: "80%", time: "16:03", status: "5 min" }
+        ]
+    }
+};
+
+function assetCell(item) {
+    if (item.flag) {
+        return `<img src="${item.flag}" style="width:14px; margin-right:5px; vertical-align:middle;"> ${item.asset}`;
+    }
+    const color = item.iconColor || "#FFF";
+    return `<i class="${item.icon}" style="color:${color}; margin-right:5px;"></i> ${item.asset}`;
+}
+
+function buildOpenRow(r) {
+    return `<tr><td>${assetCell(r)}</td><td class="${r.typeClass}"><i class="fa-solid ${r.typeIcon}"></i> ${r.type}</td><td>${r.amount}</td><td>${r.open}</td><td class="live-price">${r.current}</td><td>${r.payout}</td><td><span class="${r.statusClass}">${r.status}</span></td></tr>`;
+}
+function buildHistoryRow(r) {
+    return `<tr><td>${assetCell(r)}</td><td class="${r.typeClass}"><i class="fa-solid ${r.typeIcon}"></i> ${r.type}</td><td>${r.amount}</td><td><span class="${r.resultClass}">${r.result}</span></td><td class="${r.plClass}">${r.pl}</td><td>${r.date}</td></tr>`;
+}
+function buildSignalRow(r) {
+    return `<tr><td>${assetCell(r)}</td><td class="${r.dirClass}"><i class="fa-solid ${r.typeIcon}"></i> ${r.direction}</td><td>${r.payout}</td><td>${r.time}</td><td>${r.status}</td></tr>`;
+}
+
+function renderTab(tabName) {
+    const content = TAB_CONTENT[tabName];
+    if (!content || !tableHead || !tradesBody) return;
+
+    const headRow = tableHead.querySelector("tr");
+    headRow.innerHTML = content.headers.map(h => `<th>${h}</th>`).join("");
+
+    tradesBody.innerHTML = "";
+    content.rows.forEach((r) => {
+        let rowHtml;
+        if (tabName === "open") rowHtml = buildOpenRow(r);
+        else if (tabName === "history") rowHtml = buildHistoryRow(r);
+        else rowHtml = buildSignalRow(r);
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = rowHtml.trim();
+        tradesBody.appendChild(tr);
+    });
+
+    tabButtons.forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.tab === tabName);
+    });
+}
+
+tabButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+        renderTab(btn.dataset.tab);
+    });
+});

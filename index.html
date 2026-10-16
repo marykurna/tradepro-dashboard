@@ -234,12 +234,12 @@
                 <!-- Trades Table -->
                 <div class="trades-table-container">
                     <div class="tabs-header">
-                        <button class="tab-btn active">Open Trades</button>
-                        <button class="tab-btn">Trade History</button>
-                        <button class="tab-btn">AI Signals</button>
+                                                    <button class="tab-btn active" data-tab="open">Open Trades</button>
+                            <button class="tab-btn" data-tab="history">Trade History</button>
+                            <button class="tab-btn" data-tab="signals">AI Signals</button>
                     </div>
                     <table>
-                        <thead>
+                                                <thead id="tableHead">
                             <tr>
                                 <th>Asset</th>
                                 <th>Type</th>
