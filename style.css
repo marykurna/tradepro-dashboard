@@ -847,3 +847,41 @@ td .status {
         width: 100%;
     }
 }
+
+/* ================================
+   12. TRADE ROW ANIMATION
+   ================================ */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+        background-color: rgba(41, 98, 255, 0.15);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        background-color: transparent;
+    }
+}
+
+.trade-row-new {
+    animation: slideIn 0.7s ease-out;
+    background-color: rgba(0, 192, 118, 0.08);
+}
+
+/* Live price pulse */
+.live-price {
+    transition: color 0.3s ease;
+    font-weight: 600;
+}
+
+/* Amount input cursor */
+.trade-controls .input-group input {
+    cursor: text;
+}
+
+/* Button press effect */
+.btn-trade:active {
+    transform: scale(0.97);
+    transition: transform 0.1s ease;
+}
