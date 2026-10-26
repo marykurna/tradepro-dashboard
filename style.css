@@ -1031,3 +1031,31 @@ td .status {
 .tab-close {
     pointer-events: auto;
 }
+
+/* ================================
+   15. ASSET TAB INTERACTION
+   ================================ */
+.asset-tab {
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+}
+
+.asset-tab:hover {
+    background-color: var(--bg-panel-hover);
+    border-color: #2E3A50;
+}
+
+.asset-tab:active {
+    transform: scale(0.97);
+}
+
+.asset-tab.active {
+    background-color: #1A2438;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 1px rgba(41, 98, 255, 0.3);
+}
+
+.tab-close {
+    pointer-events: auto;
+}
