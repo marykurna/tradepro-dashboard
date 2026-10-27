@@ -80,14 +80,13 @@ let chart, candlestickSeries, lastCandle;
 function initChart() {
     if (!chartContainer) return;
 
-    const width = chartContainer.clientWidth || 600;
-    const height = chartContainer.clientHeight || 450;
+    // Force explicit dimensions on the container
+    chartContainer.style.width = '100%';
+    chartContainer.style.height = '100%';
 
     chart = LightweightCharts.createChart(chartContainer, {
-        width: width,
-        height: height,
         layout: { 
-            background: { type: 'solid', color: '#131823' }, // Solid background!
+            background: { type: 'solid', color: '#131823' }, 
             textColor: '#8B94A7' 
         },
         grid: { 
@@ -106,8 +105,13 @@ function initChart() {
 
     updateChartData();
     
+    // Force a resize on the next animation frame to ensure it draws
+    requestAnimationFrame(() => {
+        chart.resize(chartContainer.clientWidth, chartContainer.clientHeight);
+    });
+
     window.addEventListener('resize', () => {
-        chart.applyOptions({ width: chartContainer.clientWidth, height: chartContainer.clientHeight });
+        chart.resize(chartContainer.clientWidth, chartContainer.clientHeight);
     });
 }
 
