@@ -71,14 +71,8 @@ let chart, candlestickSeries, lastCandle;
 
 function initChart() {
     if (!chartContainer) return;
-    
-    // Ensure container has size before drawing
-    const width = chartContainer.clientWidth || 500;
-    const height = chartContainer.clientHeight || 400;
 
     chart = LightweightCharts.createChart(chartContainer, {
-        width: width,
-        height: height,
         layout: { background: { type: 'solid', color: '#131823' }, textColor: '#8B94A7' },
         grid: { vertLines: { color: 'rgba(255, 255, 255, 0.03)' }, horzLines: { color: 'rgba(255, 255, 255, 0.03)' } },
         crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
@@ -93,8 +87,15 @@ function initChart() {
 
     updateChartData();
     
+    // THE MAGIC FIX: Force the chart to measure its container size AFTER the browser paints
+    requestAnimationFrame(() => {
+        if (chartContainer.clientWidth > 0) {
+            chart.resize(chartContainer.clientWidth, chartContainer.clientHeight);
+        }
+    });
+
     window.addEventListener('resize', () => {
-        chart.applyOptions({ width: chartContainer.clientWidth, height: chartContainer.clientHeight });
+        chart.resize(chartContainer.clientWidth, chartContainer.clientHeight);
     });
 }
 
@@ -211,21 +212,17 @@ function updatePayout() {
 }
 if (amountInput) amountInput.addEventListener("input", updatePayout);
 
-// 9. CHAT & TABS (Condensed for speed)
+// 9. CHAT & TABS
 const chatInput = document.getElementById("chatInput");
 const chatSend = document.getElementById("chatSend");
 const chatLog = document.getElementById("chatLog");
-const tabButtons = document.querySelectorAll(".tabs-header .tab-btn");
 
 function sendChat() {
     if (!chatInput || !chatInput.value.trim()) return;
     const text = chatInput.value.trim().toLowerCase();
-    
-    // User bubble
     chatLog.innerHTML += `<div class="chat-message user"><span class="chat-avatar">👤</span><div class="chat-text">${chatInput.value}</div></div>`;
     chatInput.value = "";
     
-    // Bot reply
     setTimeout(() => {
         let reply = "Try asking to analyze EUR/USD or type help.";
         if (text.includes("eur")) reply = "📊 EUR/USD — Bullish bias. Entry: 1.09732. Win rate: 82%.";
@@ -273,5 +270,5 @@ window.addEventListener("load", () => {
     setTimeout(() => {
         chatLog.innerHTML = `<div class="chat-message bot"><span class="chat-avatar">🤖</span><div class="chat-text">Hi! Ask me to <em>analyze EUR/USD</em>.</div></div>`;
     }, 400);
-    setTimeout(initChart, 250); // Give flexbox time to paint
+    setTimeout(initChart, 100);
 });
