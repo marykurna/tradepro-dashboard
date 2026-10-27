@@ -393,16 +393,23 @@ td .status { color: var(--accent-green); background: rgba(0, 192, 118, 0.1); pad
     left: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    z-index: 0 !important; /* Puts it behind the AI bubble and controls */
+    z-index: 0 !important; 
 }
 
-/* Make sure the chart-area is positioned correctly so the absolute chart fills it */
+/* Force the chart area to have a height */
 .chart-area {
     position: relative;
-    min-height: 400px;
+    height: 450px !important; /* <-- This is the magic fix */
+    min-height: 450px;
 }
 
 /* Ensure the trade controls stay on top */
 .trade-controls {
     z-index: 10 !important;
+}
+
+/* Ensure the layout pushes the bottom panel down */
+.main-grid {
+    height: 450px;
+    min-height: 450px;
 }
