@@ -80,9 +80,13 @@ let chart, candlestickSeries, lastCandle;
 function initChart() {
     if (!chartContainer) return;
 
+    // Force the container to have a calculated size before the library loads
+    const width = chartContainer.clientWidth || 600;
+    const height = chartContainer.clientHeight || 450;
+
     chart = LightweightCharts.createChart(chartContainer, {
-        width: chartContainer.clientWidth,
-        height: chartContainer.clientHeight,
+        width: width,
+        height: height,
         layout: { background: { type: 'solid', color: 'transparent' }, textColor: '#8B94A7' },
         grid: { vertLines: { color: 'rgba(255, 255, 255, 0.03)' }, horzLines: { color: 'rgba(255, 255, 255, 0.03)' } },
         crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
@@ -95,26 +99,36 @@ function initChart() {
         borderUpColor: '#00C076', wickDownColor: '#FF3B30', wickUpColor: '#00C076',
     });
 
+    updateChartData();
+    
+    // Fix width on resize
+    window.addEventListener('resize', () => {
+        chart.applyOptions({ width: chartContainer.clientWidth, height: chartContainer.clientHeight });
+    });
+}
+
+function updateChartData() {
+    if (!candlestickSeries) return;
+
     const data = [];
     let basePrice = state.currentPrice;
     let time = Math.floor(Date.now() / 1000) - (50 * 60);
 
     for (let i = 0; i < 50; i++) {
         const open = basePrice;
-        const close = open + (Math.random() - 0.5) * 0.002;
-        const high = Math.max(open, close) + Math.random() * 0.001;
-        const low = Math.min(open, close) - Math.random() * 0.001;
+        // Volatility adjusted based on asset price
+        const volatility = state.currentAsset === "BTC/USD" ? 50 : 0.002;
+        const close = open + (Math.random() - 0.5) * volatility;
+        const high = Math.max(open, close) + Math.random() * (volatility / 2);
+        const low = Math.min(open, close) - Math.random() * (volatility / 2);
+        
         data.push({ time: time, open: open, high: high, low: low, close: close });
         basePrice = close;
-        time += 60;
+        time += 60; 
     }
 
     candlestickSeries.setData(data);
     lastCandle = { ...data[data.length - 1] };
-
-    window.addEventListener('resize', () => {
-        chart.applyOptions({ width: chartContainer.clientWidth, height: chartContainer.clientHeight });
-    });
 }
 
 // ================================
@@ -157,7 +171,9 @@ function addTrade(type) {
     const typeLabel = isCall ? "Call" : "Put";
 
     const currentPrice = state.currentPrice;
-    const openPrice = (currentPrice - 0.00015).toFixed(5);
+    const openPrice = state.currentAsset === "BTC/USD" 
+        ? (currentPrice - 10).toFixed(2) 
+        : (currentPrice - 0.00015).toFixed(5);
 
     const row = document.createElement("tr");
     row.className = "trade-row-new";
@@ -171,7 +187,7 @@ function addTrade(type) {
         <td class="${typeClass}"><i class="fa-solid ${typeIcon}"></i> ${typeLabel}</td>
         <td>$${amount}</td>
         <td>${openPrice}</td>
-        <td class="live-price">${currentPrice.toFixed(5)}</td>
+        <td class="live-price">${currentPrice.toFixed(2)}</td>
         <td>${state.currentPayout}%</td>
         <td><span class="status">In Progress</span></td>
     `;
@@ -185,16 +201,17 @@ if (btnCall) btnCall.addEventListener("click", () => addTrade("call"));
 if (btnPut) btnPut.addEventListener("click", () => addTrade("put"));
 
 // ================================
-// 7. LIVE PRICE SIMULATION & CHART UPDATE
+// 7. LIVE PRICE SIMULATION
 // ================================
 function tickPrice() {
-    const delta = (Math.random() - 0.5) * 0.0001;
+    const volatility = state.currentAsset === "BTC/USD" ? 10 : 0.0001;
+    const delta = (Math.random() - 0.5) * volatility;
     state.currentPrice = Math.max(1.0, state.currentPrice + delta);
 
-    if (priceMarker) priceMarker.textContent = state.currentPrice.toFixed(5);
+    if (priceMarker) priceMarker.textContent = state.currentPrice.toFixed(2);
 
     document.querySelectorAll(".live-price").forEach((cell) => {
-        cell.textContent = state.currentPrice.toFixed(5);
+        cell.textContent = state.currentPrice.toFixed(2);
     });
 
     if (candlestickSeries && lastCandle) {
@@ -308,10 +325,7 @@ if (chatInput) {
 const tabButtons = document.querySelectorAll(".tabs-header .tab-btn");
 
 const TAB_CONTENT = {
-    open: {
-        headers: ["Asset", "Type", "Amount", "Open Price", "Current Price", "Payout", "Status"],
-        rows: []
-    },
+    open: { headers: ["Asset", "Type", "Amount", "Open Price", "Current Price", "Payout", "Status"], rows: [] },
     history: {
         headers: ["Asset", "Type", "Amount", "Result", "P/L", "Date"],
         rows: [
@@ -341,7 +355,6 @@ function assetCell(item) {
 
 function renderTab(tabName) {
     if (!tableHead || !tradesBody) return;
-
     tabButtons.forEach((btn) => btn.classList.toggle("active", btn.dataset.tab === tabName));
 
     if (tabName === "open") {
@@ -357,21 +370,16 @@ function renderTab(tabName) {
     tradesBody.innerHTML = "";
 
     content.rows.forEach((r) => {
-        let rowHtml = "";
-        if (tabName === "history") {
-            rowHtml = `<tr><td>${assetCell(r)}</td><td class="${r.typeClass}"><i class="fa-solid ${r.typeIcon}"></i> ${r.type}</td><td>${r.amount}</td><td><span class="${r.resultClass}">${r.result}</span></td><td class="${r.plClass}">${r.pl}</td><td>${r.date}</td></tr>`;
-        } else {
-            rowHtml = `<tr><td>${assetCell(r)}</td><td class="${r.dirClass}"><i class="fa-solid ${r.typeIcon}"></i> ${r.direction}</td><td>${r.payout}</td><td>${r.time}</td><td>${r.status}</td></tr>`;
-        }
+        let rowHtml = tabName === "history" 
+            ? `<tr><td>${assetCell(r)}</td><td class="${r.typeClass}"><i class="fa-solid ${r.typeIcon}"></i> ${r.type}</td><td>${r.amount}</td><td><span class="${r.resultClass}">${r.result}</span></td><td class="${r.plClass}">${r.pl}</td><td>${r.date}</td></tr>`
+            : `<tr><td>${assetCell(r)}</td><td class="${r.dirClass}"><i class="fa-solid ${r.typeIcon}"></i> ${r.direction}</td><td>${r.payout}</td><td>${r.time}</td><td>${r.status}</td></tr>`;
+        
         const tr = document.createElement("tr");
         tr.innerHTML = rowHtml.trim();
         tradesBody.appendChild(tr);
     });
 }
-
-tabButtons.forEach((btn) => {
-    btn.addEventListener("click", () => renderTab(btn.dataset.tab));
-});
+tabButtons.forEach((btn) => btn.addEventListener("click", () => renderTab(btn.dataset.tab)));
 
 // ================================
 // 11. ASSET TABS
@@ -436,6 +444,9 @@ function switchAsset(assetName) {
     const payoutPercent = document.querySelector(".payout-info .percent");
     if (payoutPercent) payoutPercent.textContent = data.winRate;
     if (priceMarker) priceMarker.textContent = data.basePrice.toFixed(2);
+
+    // Redraw the chart for the new asset!
+    updateChartData();
 }
 
 document.querySelectorAll(".asset-tab").forEach((tab) => {
@@ -449,7 +460,8 @@ document.querySelectorAll(".asset-tab").forEach((tab) => {
 // ================================
 // 12. INITIALIZATION
 // ================================
-window.addEventListener("DOMContentLoaded", () => {
+// Wait for window.onload to ensure CSS and fonts are fully painted before calculating chart size
+window.addEventListener("load", () => {
     if (balanceEl && currentBalance !== 1000.00) {
         balanceEl.textContent = "$" + currentBalance.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
@@ -464,6 +476,6 @@ window.addEventListener("DOMContentLoaded", () => {
         appendMessage("Hi! I'm your AI trading assistant. Ask me to <em>analyze EUR/USD</em>, or type <em>help</em>.", "bot");
     }, 400);
 
-    // Initialize the chart with a slight delay to ensure layout is ready
-    setTimeout(initChart, 100);
+    // Initialize chart after a tiny delay to ensure the container is fully rendered
+    setTimeout(initChart, 200);
 });
