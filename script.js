@@ -80,15 +80,20 @@ let chart, candlestickSeries, lastCandle;
 function initChart() {
     if (!chartContainer) return;
 
-    // Force the container to have a calculated size before the library loads
     const width = chartContainer.clientWidth || 600;
     const height = chartContainer.clientHeight || 450;
 
     chart = LightweightCharts.createChart(chartContainer, {
         width: width,
         height: height,
-        layout: { background: { type: 'solid', color: 'transparent' }, textColor: '#8B94A7' },
-        grid: { vertLines: { color: 'rgba(255, 255, 255, 0.03)' }, horzLines: { color: 'rgba(255, 255, 255, 0.03)' } },
+        layout: { 
+            background: { type: 'solid', color: '#131823' }, // Solid background!
+            textColor: '#8B94A7' 
+        },
+        grid: { 
+            vertLines: { color: 'rgba(255, 255, 255, 0.03)' }, 
+            horzLines: { color: 'rgba(255, 255, 255, 0.03)' } 
+        },
         crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
         rightPriceScale: { borderColor: '#232A3B' },
         timeScale: { borderColor: '#232A3B', timeVisible: true },
@@ -101,7 +106,6 @@ function initChart() {
 
     updateChartData();
     
-    // Fix width on resize
     window.addEventListener('resize', () => {
         chart.applyOptions({ width: chartContainer.clientWidth, height: chartContainer.clientHeight });
     });
@@ -116,7 +120,6 @@ function updateChartData() {
 
     for (let i = 0; i < 50; i++) {
         const open = basePrice;
-        // Volatility adjusted based on asset price
         const volatility = state.currentAsset === "BTC/USD" ? 50 : 0.002;
         const close = open + (Math.random() - 0.5) * volatility;
         const high = Math.max(open, close) + Math.random() * (volatility / 2);
@@ -445,7 +448,6 @@ function switchAsset(assetName) {
     if (payoutPercent) payoutPercent.textContent = data.winRate;
     if (priceMarker) priceMarker.textContent = data.basePrice.toFixed(2);
 
-    // Redraw the chart for the new asset!
     updateChartData();
 }
 
@@ -460,7 +462,6 @@ document.querySelectorAll(".asset-tab").forEach((tab) => {
 // ================================
 // 12. INITIALIZATION
 // ================================
-// Wait for window.onload to ensure CSS and fonts are fully painted before calculating chart size
 window.addEventListener("load", () => {
     if (balanceEl && currentBalance !== 1000.00) {
         balanceEl.textContent = "$" + currentBalance.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -476,6 +477,5 @@ window.addEventListener("load", () => {
         appendMessage("Hi! I'm your AI trading assistant. Ask me to <em>analyze EUR/USD</em>, or type <em>help</em>.", "bot");
     }, 400);
 
-    // Initialize chart after a tiny delay to ensure the container is fully rendered
     setTimeout(initChart, 200);
 });

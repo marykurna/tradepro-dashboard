@@ -413,12 +413,15 @@ td .status { color: var(--accent-green); background: rgba(0, 192, 118, 0.1); pad
     height: 450px;
     min-height: 450px;
 }
-/* --- FINAL CHART LAYER FIX --- */
+/* ================================
+   19. REAL CHART CSS
+   ================================ */
 .chart-area {
     position: relative !important;
     height: 450px !important;
     min-height: 450px !important;
     overflow: hidden !important;
+    background-image: none !important; /* Removes the old CSS grid background */
 }
 
 #tvChart {
@@ -427,17 +430,16 @@ td .status { color: var(--accent-green); background: rgba(0, 192, 118, 0.1); pad
     left: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    z-index: 50 !important; /* Forces it above the background grid */
-    background-color: transparent !important;
+    z-index: 1 !important; 
 }
 
 /* Push the controls and bubble above the chart */
 .trade-controls {
-    z-index: 100 !important; 
+    z-index: 10 !important; 
 }
 .signal-bubble {
-    z-index: 100 !important;
+    z-index: 10 !important;
 }
 .price-marker {
-    z-index: 100 !important;
+    z-index: 10 !important;
 }
