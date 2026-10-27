@@ -563,3 +563,62 @@ document.querySelectorAll(".asset-tab").forEach((tab) => {
         if (asset) switchAsset(asset);
     });
 });
+
+// ================================
+// 11. LIVE BALANCE UPDATES & LOCALSTORAGE
+// ================================
+// 1. Load saved data or start fresh
+let savedData = localStorage.getItem("tradeproState");
+let currentBalance = savedData ? JSON.parse(savedData).balance : 1000.00;
+
+const balanceEl = document.getElementById("accountBalance");
+const depositBtn = document.getElementById("btnDeposit");
+
+// 2. Function to save data to browser memory
+function saveState() {
+    // We get the current HTML of the trades table and save it too
+    const tradesHTML = tradesBody ? tradesBody.innerHTML : "";
+    localStorage.setItem("tradeproState", JSON.stringify({
+        balance: currentBalance,
+        trades: tradesHTML
+    }));
+}
+
+// 3. Function to update balance and UI
+function updateBalance(amount) {
+    currentBalance += amount;
+    
+    if (balanceEl) {
+        balanceEl.textContent = "$" + currentBalance.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        
+        // Add visual flash animation
+        balanceEl.classList.remove("balance-flash");
+        void balanceEl.offsetWidth; 
+        balanceEl.classList.add("balance-flash");
+    }
+    saveState(); // Save every time balance changes
+}
+
+// 4. Handle Deposit button
+if (depositBtn) {
+    depositBtn.addEventListener("click", () => {
+        updateBalance(500);
+        console.log("💰 Deposited $500. New balance:", currentBalance);
+    });
+}
+
+// 5. On page load, restore saved data
+window.addEventListener("DOMContentLoaded", () => {
+    // Restore balance text
+    if (balanceEl && currentBalance !== 1000.00) {
+        balanceEl.textContent = "$" + currentBalance.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    
+    // Restore table rows
+    if (savedData && tradesBody) {
+        const parsed = JSON.parse(savedData);
+        if (parsed.trades) {
+            tradesBody.innerHTML = parsed.trades;
+        }
+    }
+});
