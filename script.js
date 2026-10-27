@@ -622,3 +622,23 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     }
 });
+
+// ================================
+// 12. RESET BUTTON
+// ================================
+const resetBtn = document.getElementById("btnReset");
+
+if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+        // 1. Ask for confirmation
+        const confirmReset = confirm("Are you sure you want to reset your balance and clear all trades?");
+        
+        if (confirmReset) {
+            // 2. Clear saved data from browser memory
+            localStorage.removeItem("tradeproState");
+            
+            // 3. Reload the page to apply the clean slate
+            location.reload(); 
+        }
+    });
+}

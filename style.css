@@ -1061,3 +1061,26 @@ td .status {
 }
 
 /* 16. BALANCE ANIMATION */
+
+
+/* ================================
+   17. RESET BUTTON
+   ================================ */
+.btn-reset {
+    background-color: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    margin-right: 8px;
+}
+
+.btn-reset:hover {
+    color: var(--text-main);
+    border-color: var(--accent-red);
+    background-color: rgba(255, 59, 48, 0.1);
+}
