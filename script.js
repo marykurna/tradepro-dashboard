@@ -72,7 +72,53 @@ const DEFAULT_OPEN_TRADES = `
 `;
 
 // ================================
-// 4. BALANCE & RESET
+// 4. REAL TRADINGVIEW CHART
+// ================================
+const chartContainer = document.getElementById("tvChart");
+let chart, candlestickSeries, lastCandle;
+
+function initChart() {
+    if (!chartContainer) return;
+
+    chart = LightweightCharts.createChart(chartContainer, {
+        width: chartContainer.clientWidth,
+        height: chartContainer.clientHeight,
+        layout: { background: { type: 'solid', color: 'transparent' }, textColor: '#8B94A7' },
+        grid: { vertLines: { color: 'rgba(255, 255, 255, 0.03)' }, horzLines: { color: 'rgba(255, 255, 255, 0.03)' } },
+        crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+        rightPriceScale: { borderColor: '#232A3B' },
+        timeScale: { borderColor: '#232A3B', timeVisible: true },
+    });
+
+    candlestickSeries = chart.addCandlestickSeries({
+        upColor: '#00C076', downColor: '#FF3B30', borderDownColor: '#FF3B30',
+        borderUpColor: '#00C076', wickDownColor: '#FF3B30', wickUpColor: '#00C076',
+    });
+
+    const data = [];
+    let basePrice = state.currentPrice;
+    let time = Math.floor(Date.now() / 1000) - (50 * 60);
+
+    for (let i = 0; i < 50; i++) {
+        const open = basePrice;
+        const close = open + (Math.random() - 0.5) * 0.002;
+        const high = Math.max(open, close) + Math.random() * 0.001;
+        const low = Math.min(open, close) - Math.random() * 0.001;
+        data.push({ time: time, open: open, high: high, low: low, close: close });
+        basePrice = close;
+        time += 60;
+    }
+
+    candlestickSeries.setData(data);
+    lastCandle = { ...data[data.length - 1] };
+
+    window.addEventListener('resize', () => {
+        chart.applyOptions({ width: chartContainer.clientWidth, height: chartContainer.clientHeight });
+    });
+}
+
+// ================================
+// 5. BALANCE & RESET
 // ================================
 function updateBalance(amount) {
     currentBalance += amount;
@@ -85,11 +131,7 @@ function updateBalance(amount) {
     saveState();
 }
 
-if (depositBtn) {
-    depositBtn.addEventListener("click", () => {
-        updateBalance(500);
-    });
-}
+if (depositBtn) depositBtn.addEventListener("click", () => updateBalance(500));
 
 if (resetBtn) {
     resetBtn.addEventListener("click", () => {
@@ -101,7 +143,7 @@ if (resetBtn) {
 }
 
 // ================================
-// 5. TRADE BUTTONS
+// 6. TRADE BUTTONS
 // ================================
 function addTrade(type) {
     if (!tradesBody) return;
@@ -136,7 +178,6 @@ function addTrade(type) {
     tradesBody.insertBefore(row, tradesBody.firstChild);
     setTimeout(() => row.classList.remove("trade-row-new"), 800);
     
-    // Deduct balance and save
     updateBalance(-amount);
 }
 
@@ -144,7 +185,7 @@ if (btnCall) btnCall.addEventListener("click", () => addTrade("call"));
 if (btnPut) btnPut.addEventListener("click", () => addTrade("put"));
 
 // ================================
-// 6. LIVE PRICE SIMULATION
+// 7. LIVE PRICE SIMULATION & CHART UPDATE
 // ================================
 function tickPrice() {
     const delta = (Math.random() - 0.5) * 0.0001;
@@ -155,11 +196,18 @@ function tickPrice() {
     document.querySelectorAll(".live-price").forEach((cell) => {
         cell.textContent = state.currentPrice.toFixed(5);
     });
+
+    if (candlestickSeries && lastCandle) {
+        lastCandle.close = state.currentPrice;
+        if (state.currentPrice > lastCandle.high) lastCandle.high = state.currentPrice;
+        if (state.currentPrice < lastCandle.low) lastCandle.low = state.currentPrice;
+        candlestickSeries.update(lastCandle);
+    }
 }
 setInterval(tickPrice, 2000);
 
 // ================================
-// 7. AMOUNT CONTROLS
+// 8. AMOUNT CONTROLS
 // ================================
 document.querySelectorAll(".trade-controls .input-group").forEach((group) => {
     const buttons = group.querySelectorAll("button");
@@ -191,7 +239,7 @@ function updatePayout() {
 if (amountInput) amountInput.addEventListener("input", updatePayout);
 
 // ================================
-// 8. AI CHAT BOT
+// 9. AI CHAT BOT
 // ================================
 const chatInput = document.getElementById("chatInput");
 const chatSend = document.getElementById("chatSend");
@@ -255,7 +303,7 @@ if (chatInput) {
 }
 
 // ================================
-// 9. BOTTOM TABS
+// 10. BOTTOM TABS
 // ================================
 const tabButtons = document.querySelectorAll(".tabs-header .tab-btn");
 
@@ -326,7 +374,7 @@ tabButtons.forEach((btn) => {
 });
 
 // ================================
-// 10. ASSET TABS
+// 11. ASSET TABS
 // ================================
 const ASSET_DATA = {
     "EUR/USD": { flag: "https://flagcdn.com/w20/eu.png", icon: null, winRate: "82%", signal: "CALL", signalIcon: "fa-arrow-up", entry: "1.09732", target: "1.09810", stop: "1.09670", basePrice: 1.09732, payout: 82 },
@@ -399,23 +447,23 @@ document.querySelectorAll(".asset-tab").forEach((tab) => {
 });
 
 // ================================
-// 11. INITIALIZATION
+// 12. INITIALIZATION
 // ================================
 window.addEventListener("DOMContentLoaded", () => {
-    // 1. Restore balance
     if (balanceEl && currentBalance !== 1000.00) {
         balanceEl.textContent = "$" + currentBalance.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
-    // 2. Restore trades into the "Open Trades" table
     if (parsedData && parsedData.trades && tradesBody) {
         tradesBody.innerHTML = parsedData.trades;
     } else if (tradesBody) {
         tradesBody.innerHTML = DEFAULT_OPEN_TRADES;
     }
 
-    // 3. Welcome message
     setTimeout(() => {
         appendMessage("Hi! I'm your AI trading assistant. Ask me to <em>analyze EUR/USD</em>, or type <em>help</em>.", "bot");
     }, 400);
+
+    // Initialize the chart with a slight delay to ensure layout is ready
+    setTimeout(initChart, 100);
 });

@@ -239,23 +239,149 @@ td .status { color: var(--accent-green); background: rgba(0, 192, 118, 0.1); pad
    11. RESPONSIVE MOBILE (The Polish)
    ================================ */
 @media (max-width: 1100px) {
-    .main-grid { grid-template-columns: 1fr; height: auto; min-height: auto; }
-    .chart-panel { height: 400px; }
-    .bottom-panel { flex-direction: column; height: auto; }
-    .recent-signals-box { width: 100%; }
+    .main-grid { 
+        grid-template-columns: 1fr; 
+        height: auto; 
+        min-height: auto; 
+    }
+    .chart-panel { 
+        height: 400px; 
+    }
+    .bottom-panel { 
+        flex-direction: column; 
+        height: auto; 
+    }
+    .recent-signals-box { 
+        width: 100%; 
+    }
+    /* Chart takes full width when stacked */
+    #tvChart {
+        right: 0 !important;
+    }
 }
 
 @media (max-width: 768px) {
-    .top-nav-links { display: none; } /* Hide top links on mobile */
-    .app-container { flex-direction: column; overflow-y: auto; }
-    .sidebar { width: 100%; flex-direction: row; justify-content: space-around; padding-top: 0; padding-bottom: 5px; border-right: none; border-bottom: 1px solid var(--border-color); height: 60px; }
-    .nav-item { padding: 5px 0; }
-    .nav-item.active::before { left: 0; bottom: 0; top: auto; width: 100%; height: 3px; }
-    .workspace { overflow-y: visible; padding: 10px; }
-    .main-grid { display: flex; flex-direction: column; height: auto; }
-    .chart-panel { height: 450px; }
-    .trade-controls { width: 150px; padding: 10px; }
-    .top-nav { padding: 10px; height: auto; flex-wrap: wrap; gap: 10px; justify-content: center; }
-    .user-controls { width: 100%; justify-content: space-between; }
-    .account-info { text-align: left; }
+    /* Top Nav adjustments */
+    .top-nav-links { 
+        display: none; /* Hide top links on mobile */
+    }
+    .top-nav { 
+        padding: 10px; 
+        height: auto; 
+        flex-wrap: wrap; 
+        gap: 10px; 
+        justify-content: center; 
+    }
+    .user-controls { 
+        width: 100%; 
+        justify-content: space-between; 
+    }
+    .account-info { 
+        text-align: left; 
+    }
+    
+    /* Sidebar moves to bottom */
+    .app-container { 
+        flex-direction: column; 
+        overflow-y: auto; 
+    }
+    .sidebar { 
+        width: 100%; 
+        flex-direction: row; 
+        justify-content: space-around; 
+        padding-top: 0; 
+        padding-bottom: 5px; 
+        border-right: none; 
+        border-bottom: 1px solid var(--border-color); 
+        height: 60px; 
+    }
+    .nav-item { 
+        padding: 5px 0; 
+    }
+    .nav-item.active::before { 
+        left: 0; 
+        bottom: 0; 
+        top: auto; 
+        width: 100%; 
+        height: 3px; 
+    }
+    
+    /* Workspace and main grid */
+    .workspace { 
+        overflow-y: visible; 
+        padding: 10px; 
+    }
+    .main-grid { 
+        display: flex; 
+        flex-direction: column; 
+        height: auto; 
+    }
+    .chart-panel { 
+        height: 450px; 
+    }
+    
+    /* Trade Controls adjustments */
+    .trade-controls { 
+        width: 150px; 
+        padding: 10px; 
+    }
+    /* Chart doesn't overlap trade controls on mobile */
+    #tvChart {
+        right: 150px !important; 
+    }
+}
+
+/* Extra small devices (Phones in portrait) */
+@media (max-width: 480px) {
+    .trade-controls {
+        width: 130px;
+        padding: 8px;
+    }
+    #tvChart {
+        right: 130px !important;
+    }
+    .chart-panel {
+        height: 380px;
+    }
+}
+
+/* ================================
+   12. TRADINGVIEW CHART ADJUSTMENTS
+   ================================ */
+#tvChart {
+    z-index: 1;
+    /* Ensure the chart doesn't overlap the trade controls on desktop */
+    right: 200px; 
+}
+
+/* ================================
+   13. BALANCE ANIMATION & RESET BUTTON
+   ================================ */
+@keyframes balanceFlashGreen {
+    0% { color: var(--accent-green); transform: scale(1.1); }
+    100% { color: var(--text-main); transform: scale(1); }
+}
+
+.balance-flash {
+    display: inline-block; /* Required for transform */
+    animation: balanceFlashGreen 0.6s ease-out;
+}
+
+.btn-reset {
+    background-color: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    margin-right: 8px;
+}
+
+.btn-reset:hover {
+    color: var(--text-main);
+    border-color: var(--accent-red);
+    background-color: rgba(255, 59, 48, 0.1);
 }
