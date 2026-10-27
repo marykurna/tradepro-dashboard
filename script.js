@@ -49,11 +49,15 @@ function initChart() {
     candlestickSeries = chart.addCandlestickSeries({ upColor: '#00C076', downColor: '#FF3B30', borderDownColor: '#FF3B30', borderUpColor: '#00C076', wickDownColor: '#FF3B30', wickUpColor: '#00C076' });
     updateChartData();
     
-      // Force redraw after paint (Delayed to ensure flexbox is fully rendered)
-    setTimeout(() => {
-        chart.resize(chartContainer.clientWidth, chartContainer.clientHeight);
-    }, 100);  
-    window.addEventListener('resize', () => chart.resize(chartContainer.clientWidth, chartContainer.clientHeight));
+              // Force redraw after paint (Delayed to ensure flexbox is fully rendered)
+        setTimeout(() => {
+            chart.resize(chartContainer.clientWidth, chartContainer.clientHeight);
+            if (candlestickSeries) {
+                // This forces the canvas to draw the data immediately
+                candlestickSeries.applyOptions({}); 
+            }
+        }, 500);
+        window.addEventListener('resize', () => chart.resize(chartContainer.clientWidth, chartContainer.clientHeight));
 }
 
 function updateChartData() {
