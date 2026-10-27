@@ -385,3 +385,24 @@ td .status { color: var(--accent-green); background: rgba(0, 192, 118, 0.1); pad
     border-color: var(--accent-red);
     background-color: rgba(255, 59, 48, 0.1);
 }
+
+/* Fix for TradingView Chart Layout */
+#tvChart {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 0 !important; /* Puts it behind the AI bubble and controls */
+}
+
+/* Make sure the chart-area is positioned correctly so the absolute chart fills it */
+.chart-area {
+    position: relative;
+    min-height: 400px;
+}
+
+/* Ensure the trade controls stay on top */
+.trade-controls {
+    z-index: 10 !important;
+}
