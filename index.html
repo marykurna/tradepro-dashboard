@@ -7,16 +7,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <!-- TradingView Lightweight Charts -->
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
-
-    <!-- TOP NAVIGATION -->
     <nav class="top-nav">
-        <div class="logo">
-            <i class="fa-solid fa-chart-line"></i> TradePro
-        </div>
+        <div class="logo"><i class="fa-solid fa-chart-line"></i> TradePro</div>
         <div class="top-nav-links">
             <a href="#" class="active">Trading</a>
             <a href="#">AI Signals</a>
@@ -35,81 +30,42 @@
         </div>
     </nav>
 
-    <!-- MAIN APP -->
     <div class="app-container">
-
-        <!-- LEFT SIDEBAR -->
         <aside class="sidebar">
-            <a href="#" class="nav-item active">
-                <i class="fa-solid fa-chart-simple"></i>
-                <span>Trading</span>
-            </a>
-            <a href="#" class="nav-item">
-                <i class="fa-solid fa-robot"></i>
-                <span>AI Signals</span>
-            </a>
-            <a href="#" class="nav-item">
-                <i class="fa-solid fa-clock-rotate-left"></i>
-                <span>My Trades</span>
-            </a>
-            <a href="#" class="nav-item">
-                <i class="fa-solid fa-wallet"></i>
-                <span>Wallet</span>
-            </a>
-            <a href="#" class="nav-item">
-                <i class="fa-solid fa-user"></i>
-                <span>Profile</span>
-            </a>
-            <a href="#" class="nav-item">
-                <i class="fa-solid fa-gear"></i>
-                <span>Settings</span>
-            </a>
+            <a href="#" class="nav-item active"><i class="fa-solid fa-chart-simple"></i><span>Trading</span></a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-robot"></i><span>AI Signals</span></a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i><span>My Trades</span></a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-wallet"></i><span>Wallet</span></a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
         </aside>
 
-        <!-- MAIN WORKSPACE -->
         <main class="workspace">
-
-            <!-- ASSET TABS ROW -->
             <div class="asset-tabs">
                 <div class="asset-tab active" data-asset="EUR/USD">
                     <img src="https://flagcdn.com/w20/eu.png" class="asset-flag" alt="EU">
-                    <span>EUR/USD</span>
-                    <span class="asset-change up">82%</span>
-                    <i class="fa-solid fa-xmark tab-close"></i>
+                    <span>EUR/USD</span><span class="asset-change up">82%</span><i class="fa-solid fa-xmark tab-close"></i>
                 </div>
                 <div class="asset-tab" data-asset="GBP/USD">
                     <img src="https://flagcdn.com/w20/gb.png" class="asset-flag" alt="GB">
-                    <span>GBP/USD</span>
-                    <span class="asset-change up">82%</span>
-                    <i class="fa-solid fa-xmark tab-close"></i>
+                    <span>GBP/USD</span><span class="asset-change up">82%</span><i class="fa-solid fa-xmark tab-close"></i>
                 </div>
                 <div class="asset-tab" data-asset="BTC/USD">
                     <i class="fa-brands fa-bitcoin" style="color: #F7931A; font-size: 16px;"></i>
-                    <span>BTC/USD</span>
-                    <span class="asset-change up">78%</span>
-                    <i class="fa-solid fa-xmark tab-close"></i>
+                    <span>BTC/USD</span><span class="asset-change up">78%</span><i class="fa-solid fa-xmark tab-close"></i>
                 </div>
                 <div class="asset-tab" data-asset="XAU/USD">
                     <i class="fa-solid fa-coins" style="color: #FFD700; font-size: 14px;"></i>
-                    <span>XAU/USD</span>
-                    <span class="asset-change up">80%</span>
-                    <i class="fa-solid fa-xmark tab-close"></i>
+                    <span>XAU/USD</span><span class="asset-change up">80%</span><i class="fa-solid fa-xmark tab-close"></i>
                 </div>
                 <div class="asset-tab" data-asset="USD/JPY">
                     <img src="https://flagcdn.com/w20/us.png" class="asset-flag" alt="US">
-                    <span>USD/JPY</span>
-                    <span class="asset-change up">79%</span>
-                    <i class="fa-solid fa-xmark tab-close"></i>
+                    <span>USD/JPY</span><span class="asset-change up">79%</span><i class="fa-solid fa-xmark tab-close"></i>
                 </div>
-                <button class="btn-add" title="Add asset">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
+                <button class="btn-add" title="Add asset"><i class="fa-solid fa-plus"></i></button>
             </div>
 
-            <!-- MAIN GRID: CHART + AI PANEL -->
             <div class="main-grid">
-
-                <!-- Chart Panel -->
                 <div class="chart-panel">
                     <div class="chart-header">
                         <div class="chart-info">
@@ -124,18 +80,13 @@
                         </div>
                     </div>
 
-                    <!-- Chart Area -->
-                    <div class="chart-area">
-                        <!-- TradingView Chart Container -->
+                    <!-- THE FIX: Explicit 400px height on the container -->
+                    <div class="chart-area" style="position: relative; height: 400px;">
                         <div id="tvChart" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
                         
                         <div class="price-marker">1.09732</div>
-                        <div class="signal-bubble">
-                            <i class="fa-solid fa-robot"></i> AI Signal
-                            <br>CALL
-                        </div>
+                        <div class="signal-bubble"><i class="fa-solid fa-robot"></i> AI Signal<br>CALL</div>
 
-                        <!-- Trade Controls Overlay -->
                         <div class="trade-controls">
                             <div>
                                 <label style="font-size: 12px; color: var(--text-muted);">Amount</label>
@@ -156,55 +107,32 @@
                                 <div class="percent">82%</div>
                                 <div class="amount">+$91.00</div>
                             </div>
-                            <button class="btn-trade btn-call" id="btnCall">
-                                <i class="fa-solid fa-arrow-up"></i> Call
-                            </button>
-                            <button class="btn-trade btn-put" id="btnPut">
-                                <i class="fa-solid fa-arrow-down"></i> Put
-                            </button>
+                            <button class="btn-trade btn-call" id="btnCall"><i class="fa-solid fa-arrow-up"></i> Call</button>
+                            <button class="btn-trade btn-put" id="btnPut"><i class="fa-solid fa-arrow-down"></i> Put</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- RIGHT AI SIGNAL PANEL -->
                 <div class="right-panel">
                     <div class="panel-box ai-signal-card">
                         <div class="ai-header">
                             <span><i class="fa-solid fa-robot" style="color: var(--accent-blue);"></i> AI Signal Bot</span>
                             <span class="status-dot"></span>
                         </div>
-                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">
-                            I've analyzed the market. Here is my current recommendation for EUR/USD (5m):
-                        </p>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">I've analyzed the market. Here is my current recommendation for EUR/USD (5m):</p>
                         <div class="signal-details">
-                            <div class="signal-direction">
-                                <i class="fa-solid fa-arrow-up"></i> CALL
-                            </div>
+                            <div class="signal-direction"><i class="fa-solid fa-arrow-up"></i> CALL</div>
                             <div class="badge-green" style="display:inline-block; margin-bottom: 10px;">82% Win Rate</div>
-                            <div class="signal-meta">
-                                <span>Entry Price</span>
-                                <span style="color:white; font-weight:600;">1.09732</span>
-                            </div>
-                            <div class="signal-meta">
-                                <span>Target Price</span>
-                                <span style="color:white; font-weight:600;">1.09810</span>
-                            </div>
-                            <div class="signal-meta">
-                                <span>Stop Loss</span>
-                                <span style="color:white; font-weight:600;">1.09670</span>
-                            </div>
+                            <div class="signal-meta"><span>Entry Price</span><span style="color:white; font-weight:600;">1.09732</span></div>
+                            <div class="signal-meta"><span>Target Price</span><span style="color:white; font-weight:600;">1.09810</span></div>
+                            <div class="signal-meta"><span>Stop Loss</span><span style="color:white; font-weight:600;">1.09670</span></div>
                         </div>
                         <div style="font-size: 12px; color: var(--text-muted); margin: 15px 0; line-height: 1.5;">
-                            <strong>Why?</strong><br>
-                            Price is above the 50 EMA, showing bullish momentum. RSI is at 62 and forming higher lows. Trend remains upward.
+                            <strong>Why?</strong><br>Price is above the 50 EMA, showing bullish momentum. RSI is at 62 and forming higher lows. Trend remains upward.
                         </div>
-                        <button class="btn-view-details">
-                            <i class="fa-solid fa-rotate"></i> New Signal
-                        </button>
+                        <button class="btn-view-details"><i class="fa-solid fa-rotate"></i> New Signal</button>
                     </div>
-
                     <div class="chat-log" id="chatLog"></div>
-
                     <div class="ai-chat-input">
                         <input type="text" placeholder="Ask the AI bot..." id="chatInput">
                         <button id="chatSend"><i class="fa-solid fa-paper-plane"></i></button>
@@ -212,7 +140,6 @@
                 </div>
             </div>
 
-            <!-- BOTTOM PANEL -->
             <div class="bottom-panel">
                 <div class="trades-table-container">
                     <div class="tabs-header">
@@ -222,73 +149,25 @@
                     </div>
                     <table>
                         <thead id="tableHead">
-                            <tr>
-                                <th>Asset</th>
-                                <th>Type</th>
-                                <th>Amount</th>
-                                <th>Open Price</th>
-                                <th>Current Price</th>
-                                <th>Payout</th>
-                                <th>Status</th>
-                            </tr>
+                            <tr><th>Asset</th><th>Type</th><th>Amount</th><th>Open Price</th><th>Current Price</th><th>Payout</th><th>Status</th></tr>
                         </thead>
                         <tbody id="tradesBody"></tbody>
                     </table>
                 </div>
-
                 <div class="panel-box recent-signals-box">
                     <div style="display:flex; justify-content:space-between; margin-bottom: 10px;">
                         <span style="font-size: 13px; font-weight: 600;">Recent AI Signals</span>
                         <span style="font-size: 12px; color: var(--accent-blue); cursor:pointer;">View All</span>
                     </div>
                     <div class="recent-signals-list">
-                        <div class="signal-item">
-                            <div class="signal-pair">
-                                <img src="https://flagcdn.com/w20/eu.png" style="width:14px;">
-                                <span>EUR/USD</span>
-                            </div>
-                            <div class="signal-info">
-                                <div class="signal-action up"><i class="fa-solid fa-arrow-up"></i> CALL</div>
-                                <div class="signal-winrate">5m 16:32 82%</div>
-                            </div>
-                        </div>
-                        <div class="signal-item">
-                            <div class="signal-pair">
-                                <img src="https://flagcdn.com/w20/gb.png" style="width:14px;">
-                                <span>GBP/USD</span>
-                            </div>
-                            <div class="signal-info">
-                                <div class="signal-action down"><i class="fa-solid fa-arrow-down"></i> PUT</div>
-                                <div class="signal-winrate">5m 16:21 82%</div>
-                            </div>
-                        </div>
-                        <div class="signal-item">
-                            <div class="signal-pair">
-                                <i class="fa-brands fa-bitcoin" style="color:#F7931A;"></i>
-                                <span>BTC/USD</span>
-                            </div>
-                            <div class="signal-info">
-                                <div class="signal-action up"><i class="fa-solid fa-arrow-up"></i> CALL</div>
-                                <div class="signal-winrate">5m 16:14 78%</div>
-                            </div>
-                        </div>
-                        <div class="signal-item">
-                            <div class="signal-pair">
-                                <i class="fa-solid fa-coins" style="color:#FFD700;"></i>
-                                <span>XAU/USD</span>
-                            </div>
-                            <div class="signal-info">
-                                <div class="signal-action down"><i class="fa-solid fa-arrow-down"></i> PUT</div>
-                                <div class="signal-winrate">5m 16:03 80%</div>
-                            </div>
-                        </div>
+                        <div class="signal-item"><div class="signal-pair"><img src="https://flagcdn.com/w20/eu.png" style="width:14px;"><span>EUR/USD</span></div><div class="signal-info"><div class="signal-action up"><i class="fa-solid fa-arrow-up"></i> CALL</div><div class="signal-winrate">5m 16:32 82%</div></div></div>
+                        <div class="signal-item"><div class="signal-pair"><img src="https://flagcdn.com/w20/gb.png" style="width:14px;"><span>GBP/USD</span></div><div class="signal-info"><div class="signal-action down"><i class="fa-solid fa-arrow-down"></i> PUT</div><div class="signal-winrate">5m 16:21 82%</div></div></div>
+                        <div class="signal-item"><div class="signal-pair"><i class="fa-brands fa-bitcoin" style="color:#F7931A;"></i><span>BTC/USD</span></div><div class="signal-info"><div class="signal-action up"><i class="fa-solid fa-arrow-up"></i> CALL</div><div class="signal-winrate">5m 16:14 78%</div></div></div>
                     </div>
                 </div>
             </div>
-
         </main>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
