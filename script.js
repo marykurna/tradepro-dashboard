@@ -156,5 +156,5 @@ window.addEventListener("load", () => {
     if (balanceEl && currentBalance !== 1000.00) balanceEl.textContent = "$" + currentBalance.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     tradesBody.innerHTML = (parsedData && parsedData.trades) ? parsedData.trades : DEFAULT_OPEN_TRADES;
     setTimeout(() => { chatLog.innerHTML = `<div class="chat-message bot"><span class="chat-avatar">🤖</span><div class="chat-text">Hi! Ask me to <em>analyze EUR/USD</em>.</div></div>`; }, 400);
-    setTimeout(initChart, 100);
+    setTimeout(initChart, 500);
 });
