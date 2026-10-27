@@ -1,6 +1,8 @@
 // ========================================
-// TradePro Dashboard — Final Script
+// TradePro Dashboard — Final Verified Script
 // ========================================
+
+// 1. DOM ELEMENTS
 const btnCall = document.getElementById("btnCall");
 const btnPut = document.getElementById("btnPut");
 const tradesBody = document.getElementById("tradesBody");
@@ -13,9 +15,9 @@ const resetBtn = document.getElementById("btnReset");
 const chatInput = document.getElementById("chatInput");
 const chatSend = document.getElementById("chatSend");
 const chatLog = document.getElementById("chatLog");
-const tabButtons = document.querySelectorAll(".tabs-header .tab-btn");
 const chartContainer = document.getElementById("tvChart");
 
+// 2. STATE & STORAGE
 let savedData = localStorage.getItem("tradeproState");
 let parsedData = savedData ? JSON.parse(savedData) : null;
 let currentBalance = parsedData ? parsedData.balance : 1000.00;
@@ -37,27 +39,32 @@ function saveState() {
     localStorage.setItem("tradeproState", JSON.stringify({ balance: currentBalance, trades: tradesBody.innerHTML }));
 }
 
-// CHART SETUP
+// 3. CHART SETUP (THE BULLETPROOF METHOD)
 function initChart() {
     if (!chartContainer) return;
+
     chart = LightweightCharts.createChart(chartContainer, {
         layout: { background: { type: 'solid', color: '#131823' }, textColor: '#8B94A7' },
         grid: { vertLines: { color: 'rgba(255, 255, 255, 0.03)' }, horzLines: { color: 'rgba(255, 255, 255, 0.03)' } },
         rightPriceScale: { borderColor: '#232A3B' },
         timeScale: { borderColor: '#232A3B', timeVisible: true },
     });
-    candlestickSeries = chart.addCandlestickSeries({ upColor: '#00C076', downColor: '#FF3B30', borderDownColor: '#FF3B30', borderUpColor: '#00C076', wickDownColor: '#FF3B30', wickUpColor: '#00C076' });
+
+    candlestickSeries = chart.addCandlestickSeries({
+        upColor: '#00C076', downColor: '#FF3B30', borderDownColor: '#FF3B30',
+        borderUpColor: '#00C076', wickDownColor: '#FF3B30', wickUpColor: '#00C076',
+    });
+
     updateChartData();
     
-              // Force redraw after paint (Delayed to ensure flexbox is fully rendered)
-        setTimeout(() => {
-            chart.resize(chartContainer.clientWidth, chartContainer.clientHeight);
-            if (candlestickSeries) {
-                // This forces the canvas to draw the data immediately
-                candlestickSeries.applyOptions({}); 
-            }
-        }, 500);
-        window.addEventListener('resize', () => chart.resize(chartContainer.clientWidth, chartContainer.clientHeight));
+    // Force resize and redraw instantly and on any container change
+    chart.resize(chartContainer.clientWidth, chartContainer.clientHeight);
+    
+    // The ResizeObserver catches any layout shifts automatically
+    const resizeObserver = new ResizeObserver(() => {
+        chart.resize(chartContainer.clientWidth, chartContainer.clientHeight);
+    });
+    resizeObserver.observe(chartContainer);
 }
 
 function updateChartData() {
@@ -78,7 +85,7 @@ function updateChartData() {
     lastCandle = { ...data[data.length - 1] };
 }
 
-// BALANCE & TRADES
+// 4. BALANCE & TRADES
 function updateBalance(amount) {
     currentBalance += amount;
     if (balanceEl) {
@@ -105,7 +112,7 @@ if (resetBtn) resetBtn.addEventListener("click", () => { if (confirm("Reset?")) 
 if (btnCall) btnCall.addEventListener("click", () => addTrade("call"));
 if (btnPut) btnPut.addEventListener("click", () => addTrade("put"));
 
-// LIVE TICK
+// 5. LIVE TICK
 setInterval(() => {
     state.currentPrice = Math.max(1.0, state.currentPrice + (Math.random() - 0.5) * (state.currentAsset === "BTC/USD" ? 10 : 0.0001));
     if (priceMarker) priceMarker.textContent = state.currentPrice.toFixed(2);
@@ -118,7 +125,7 @@ setInterval(() => {
     }
 }, 2000);
 
-// ASSET SWITCHING
+// 6. ASSET SWITCHING
 const ASSET_DATA = {
     "EUR/USD": { flag: "https://flagcdn.com/w20/eu.png", winRate: "82%", signal: "CALL", signalIcon: "fa-arrow-up", basePrice: 1.09732, payout: 82 },
     "GBP/USD": { flag: "https://flagcdn.com/w20/gb.png", winRate: "82%", signal: "PUT", signalIcon: "fa-arrow-down", basePrice: 1.27210, payout: 82 },
@@ -138,7 +145,7 @@ document.querySelectorAll(".asset-tab").forEach(tab => {
     });
 });
 
-// CHAT
+// 7. CHAT
 function sendChat() {
     if (!chatInput || !chatInput.value.trim()) return;
     const text = chatInput.value.trim().toLowerCase();
@@ -155,10 +162,12 @@ function sendChat() {
 if (chatSend) chatSend.addEventListener("click", sendChat);
 if (chatInput) chatInput.addEventListener("keydown", (e) => { if (e.key === "Enter") sendChat(); });
 
-// INIT
+// 8. INIT
 window.addEventListener("load", () => {
     if (balanceEl && currentBalance !== 1000.00) balanceEl.textContent = "$" + currentBalance.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     tradesBody.innerHTML = (parsedData && parsedData.trades) ? parsedData.trades : DEFAULT_OPEN_TRADES;
     setTimeout(() => { chatLog.innerHTML = `<div class="chat-message bot"><span class="chat-avatar">🤖</span><div class="chat-text">Hi! Ask me to <em>analyze EUR/USD</em>.</div></div>`; }, 400);
-    setTimeout(initChart, 500);
+    
+    // Give the browser 200ms to paint the layout, THEN build the chart
+    setTimeout(initChart, 200);
 });
