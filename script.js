@@ -39,11 +39,17 @@ function saveState() {
     localStorage.setItem("tradeproState", JSON.stringify({ balance: currentBalance, trades: tradesBody.innerHTML }));
 }
 
-// 3. CHART SETUP (THE BULLETPROOF METHOD)
+// 3. CHART SETUP (Explicit Fallback Fix)
 function initChart() {
     if (!chartContainer) return;
 
+    // Fallback dimensions in case CSS hasn't fully painted
+    const width = chartContainer.clientWidth || 600;
+    const height = chartContainer.clientHeight || 400;
+
     chart = LightweightCharts.createChart(chartContainer, {
+        width: width,
+        height: height,
         layout: { background: { type: 'solid', color: '#131823' }, textColor: '#8B94A7' },
         grid: { vertLines: { color: 'rgba(255, 255, 255, 0.03)' }, horzLines: { color: 'rgba(255, 255, 255, 0.03)' } },
         rightPriceScale: { borderColor: '#232A3B' },
@@ -57,10 +63,10 @@ function initChart() {
 
     updateChartData();
     
-    // Force resize and redraw instantly and on any container change
+    // Force resize and redraw instantly 
     chart.resize(chartContainer.clientWidth, chartContainer.clientHeight);
     
-    // The ResizeObserver catches any layout shifts automatically
+    // Catch any layout shifts automatically
     const resizeObserver = new ResizeObserver(() => {
         chart.resize(chartContainer.clientWidth, chartContainer.clientHeight);
     });
@@ -168,6 +174,6 @@ window.addEventListener("load", () => {
     tradesBody.innerHTML = (parsedData && parsedData.trades) ? parsedData.trades : DEFAULT_OPEN_TRADES;
     setTimeout(() => { chatLog.innerHTML = `<div class="chat-message bot"><span class="chat-avatar">🤖</span><div class="chat-text">Hi! Ask me to <em>analyze EUR/USD</em>.</div></div>`; }, 400);
     
-    // Give the browser 200ms to paint the layout, THEN build the chart
+    // 200ms delay to ensure the browser has painted the HTML/CSS
     setTimeout(initChart, 200);
 });
