@@ -152,6 +152,27 @@ const closeModal = document.getElementById('closeModal');
 if (btnBuy) {
     btnBuy.addEventListener('click', () => {
         modal.style.display = 'flex';
+        
+        // Tell Shopify to check if it needs to re-render the button
+        if (window.ShopifyBuy && window.ShopifyBuy.UI) {
+            var client = ShopifyBuy.buildClient({
+                domain: '1gtfan-zv.myshopify.com',
+                storefrontAccessToken: 'f50bad474411328bb6bf644cb6309fab',
+            });
+            ShopifyBuy.UI.onReady(client).then(function (ui) {
+                ui.createComponent('product', {
+                    id: '15487772819492',
+                    node: document.getElementById('product-component-1793902544829'),
+                    moneyFormat: '%24%7B%7Bamount%7D%7D',
+                    options: {
+                        "product": {
+                            "buttonDestination": "checkout",
+                            "text": { "button": "Buy now" }
+                        }
+                    }
+                });
+            });
+        }
     });
 }
 if (closeModal) {
