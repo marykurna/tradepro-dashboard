@@ -26,23 +26,26 @@ app.post('/api/chat', async (req, res) => {
     }
 });
 
-// --- ROUTE 2: REAL MARKET DATA (BINANCE) ---
+// --- ROUTE 2: REAL MARKET DATA (COINBASE) ---
 app.get('/api/market-data', async (req, res) => {
     try {
-        // Fetch 1-minute candles for BTC/USDT (limit 50)
-        const binanceResponse = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=50');
-        const binanceData = await binanceResponse.json();
+        // Fetch 1-minute candles for BTC-USD from Coinbase
+        const coinbaseResponse = await fetch('https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=60');
+        const coinbaseData = await coinbaseResponse.json();
 
-        // Format Binance data to match what our frontend chart expects
-        const formattedData = binanceData.map(candle => ({
-            open: parseFloat(candle[1]),
-            high: parseFloat(candle[2]),
-            low: parseFloat(candle[3]),
-            close: parseFloat(candle[4])
+        // Coinbase returns data newest first. We need to reverse it.
+        // Format: [time, low, high, open, close, volume]
+        const formattedData = coinbaseData.reverse().map(candle => ({
+            open: candle[3],
+            high: candle[2],
+            low: candle[1],
+            close: candle[4]
         }));
 
-        res.json(formattedData);
+        // Return only the last 50 candles
+        res.json(formattedData.slice(-50));
     } catch (error) {
+        console.error("Coinbase Error:", error);
         res.status(500).json({ error: "Failed to fetch market data." });
     }
 });
