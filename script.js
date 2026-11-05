@@ -1,39 +1,61 @@
 // ========================================
-// TradePro Dashboard — Real AI Chat (Secure Backend)
+// TradePro Dashboard — Real Live Market Data
 // ========================================
 
-// ================================
-// 1. AI Configuration (Connected to Render Backend)
-// ================================
-const OPENAI_API_URL = "https://tradepro-backend-d4zt.onrender.com/api/chat";
+// Your Render Backend URL
+const BACKEND_URL = "https://tradepro-backend-d4zt.onrender.com";
 
-// ================================
-// 2. State
-// ================================
-const state = { asset: "EUR/USD", price: 1.09732, payout: 82 };
+// State
+const state = { price: 0 };
 let canvas, ctx, chartData = [];
 
 // ================================
-// 3. Chart Data
+// 1. Fetch Real Data from Backend
 // ================================
-function generateChartData() {
-    chartData = [];
-    let base = state.price;
-    for (let i = 0; i < 40; i++) {
-        const open = base;
-        const close = open + (Math.random() - 0.5) * 0.002;
-        const high = Math.max(open, close) + Math.random() * 0.001;
-        const low = Math.min(open, close) - Math.random() * 0.001;
-        chartData.push({ open, high, low, close });
-        base = close;
+async function fetchLiveData() {
+    try {
+        const response = await fetch(`${BACKEND_URL}/api/market-data`);
+        if (!response.ok) throw new Error("Backend not ready");
+        
+        const data = await response.json();
+        chartData = data; // Update global data
+        
+        // Set state price to the latest close price
+        if (chartData.length > 0) {
+            state.price = chartData[chartData.length - 1].close;
+            const marker = document.querySelector('.price-marker');
+            if (marker) marker.textContent = state.price.toFixed(2);
+        }
+        
+        drawChart();
+    } catch (error) {
+        console.error("Failed to load market data:", error);
+        // If backend is asleep, generate temporary data so chart doesn't break
+        if (chartData.length === 0) generateFallbackData();
     }
 }
 
+// Fallback in case backend is waking up
+function generateFallbackData() {
+    chartData = [];
+    let base = 65000; // Approximate BTC price
+    for (let i = 0; i < 40; i++) {
+        const open = base;
+        const close = open + (Math.random() - 0.5) * 100;
+        const high = Math.max(open, close) + Math.random() * 50;
+        const low = Math.min(open, close) - Math.random() * 50;
+        chartData.push({ open, high, low, close });
+        base = close;
+    }
+    drawChart();
+}
+
 // ================================
-// 4. Draw Chart
+// 2. Draw Chart
 // ================================
 function drawChart() {
-    if (!canvas || !ctx) return;
+    if (!canvas || !ctx || chartData.length === 0) return;
+    
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.parentElement.getBoundingClientRect();
     canvas.width = rect.width * dpr;
@@ -43,6 +65,7 @@ function drawChart() {
     const height = rect.height;
     ctx.clearRect(0, 0, width, height);
     
+    // Draw Grid
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
     for (let i = 0; i < width; i += 50) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, height); ctx.stroke(); }
     for (let i = 0; i < height; i += 50) { ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(width, i); ctx.stroke(); }
@@ -54,6 +77,7 @@ function drawChart() {
     const range = max - min;
     const candleWidth = (width - 40) / chartData.length;
 
+    // Draw Candles
     chartData.forEach((candle, index) => {
         const x = 20 + (index * candleWidth) + (candleWidth / 2);
         const yHigh = height - ((candle.high - min) / range) * height;
@@ -75,25 +99,15 @@ function initCustomChart() {
     if (!canvas) return;
     canvas.innerHTML = '<canvas style="width: 100%; height: 100%;"></canvas>';
     ctx = canvas.querySelector('canvas').getContext('2d');
-    generateChartData();
-    drawChart();
+    
+    // Fetch initial data
+    fetchLiveData();
+    
     window.addEventListener('resize', drawChart);
 }
 
-function tick() {
-    if (chartData.length === 0) return;
-    state.price = Math.max(1.0, state.price + (Math.random() - 0.5) * 0.0001);
-    const last = chartData[chartData.length - 1];
-    last.close = state.price;
-    if (state.price > last.high) last.high = state.price;
-    if (state.price < last.low) last.low = state.price;
-    const marker = document.querySelector('.price-marker');
-    if (marker) marker.textContent = state.price.toFixed(2);
-    drawChart();
-}
-
 // ================================
-// 5. REAL AI CHAT (Connected to Backend)
+// 3. AI Chat
 // ================================
 const chatInput = document.getElementById('chatInput');
 const chatSend = document.getElementById('chatSend');
@@ -112,14 +126,12 @@ async function sendChat() {
     chatInput.value = '';
     
     appendBubble(userText, 'user');
-    
     const typingId = 'typing-' + Date.now();
     chatLog.innerHTML += `<div id="${typingId}" class="chat-message bot"><span class="chat-avatar">🤖</span><div class="chat-text">Thinking...</div></div>`;
     chatLog.scrollTop = chatLog.scrollHeight;
     
     try {
-        // Calls your secure backend
-        const response = await fetch(OPENAI_API_URL, {
+        const response = await fetch(`${BACKEND_URL}/api/chat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: userText })
@@ -128,17 +140,12 @@ async function sendChat() {
         const data = await response.json();
         document.getElementById(typingId)?.remove();
         
-        if (data.error) {
-            appendBubble('❌ Error: ' + data.error, 'bot');
-        } else if (data.choices && data.choices[0]) {
-            appendBubble(data.choices[0].message.content, 'bot');
-        } else {
-            appendBubble('❌ Unexpected response from backend.', 'bot');
-        }
+        if (data.error) appendBubble('❌ Error: ' + data.error, 'bot');
+        else if (data.choices && data.choices[0]) appendBubble(data.choices[0].message.content, 'bot');
+        else appendBubble('❌ Unexpected response from AI.', 'bot');
     } catch (error) {
         document.getElementById(typingId)?.remove();
-        appendBubble('❌ Failed to connect. The free server may be asleep (wait 30s and try again).', 'bot');
-        console.error('Chat error:', error);
+        appendBubble('❌ Failed to connect. Backend may be waking up (wait 30s).', 'bot');
     }
 }
 
@@ -146,7 +153,7 @@ if (chatSend) chatSend.addEventListener('click', sendChat);
 if (chatInput) chatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); sendChat(); } });
 
 // ================================
-// 6. Trade Buttons
+// 4. Trade Buttons
 // ================================
 document.getElementById('btnDeposit')?.addEventListener('click', () => {
     const bal = document.getElementById('accountBalance');
@@ -154,18 +161,21 @@ document.getElementById('btnDeposit')?.addEventListener('click', () => {
 });
 document.getElementById('btnCall')?.addEventListener('click', () => {
     const tbody = document.getElementById('tradesBody');
-    if (tbody) tbody.innerHTML = `<tr><td>EUR/USD</td><td style="color:#00C076">Call</td><td>$50</td><td>${state.price.toFixed(4)}</td><td class="live-price">${state.price.toFixed(4)}</td><td><span style="color:#00C076">In Progress</span></td></tr>` + tbody.innerHTML;
+    if (tbody) tbody.innerHTML = `<tr><td>BTC/USDT</td><td style="color:#00C076">Call</td><td>$50</td><td>${state.price.toFixed(2)}</td><td class="live-price">${state.price.toFixed(2)}</td><td><span style="color:#00C076">In Progress</span></td></tr>` + tbody.innerHTML;
 });
 document.getElementById('btnPut')?.addEventListener('click', () => {
     const tbody = document.getElementById('tradesBody');
-    if (tbody) tbody.innerHTML = `<tr><td>EUR/USD</td><td style="color:#FF3B30">Put</td><td>$50</td><td>${state.price.toFixed(4)}</td><td class="live-price">${state.price.toFixed(4)}</td><td><span style="color:#00C076">In Progress</span></td></tr>` + tbody.innerHTML;
+    if (tbody) tbody.innerHTML = `<tr><td>BTC/USDT</td><td style="color:#FF3B30">Put</td><td>$50</td><td>${state.price.toFixed(2)}</td><td class="live-price">${state.price.toFixed(2)}</td><td><span style="color:#00C076">In Progress</span></td></tr>` + tbody.innerHTML;
 });
 
 // ================================
-// 7. Init
+// 5. Init
 // ================================
 window.addEventListener('load', () => {
     setTimeout(initCustomChart, 200);
-    setInterval(tick, 2000);
-    setTimeout(() => appendBubble('Hi! I\'m your secure AI trading assistant. Ask me anything about trading!', 'bot'), 500);
+    
+    // Refresh data every 10 seconds to keep it live
+    setInterval(fetchLiveData, 10000); 
+    
+    setTimeout(() => appendBubble('Hi! I\'m connected to real-time Binance data. Ask me anything!', 'bot'), 500);
 });
