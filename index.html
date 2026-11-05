@@ -36,7 +36,6 @@
         </aside>
 
         <main class="workspace">
-            <!-- Updated Asset Tabs to match real data -->
             <div class="asset-tabs">
                 <div class="asset-tab active" data-asset="BTC/USD">
                     <i class="fa-brands fa-bitcoin" style="color: #F7931A; font-size: 16px;"></i>
@@ -88,7 +87,6 @@
                         <div class="signal-meta"><span>Confidence</span><span style="color:white; font-weight:600;">82%</span></div>
                         <div class="signal-meta"><span>Target</span><span style="color:white; font-weight:600;">Next Candle</span></div>
                         
-                        <!-- Button to open the Shopify Modal -->
                         <button class="btn-view-details" id="btnBuySignals" style="background: linear-gradient(90deg, #FFD700 0%, #F7931A 100%); color: black; font-weight: bold; margin-top: 15px;">
                             <i class="fa-solid fa-crown"></i> Unlock Premium Signals
                         </button>
@@ -117,20 +115,103 @@
         </main>
     </div>
 
-    <!-- Hidden Modal for Shopify -->
+    <!-- Modal with Shopify Buy Button -->
     <div id="premiumModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
-        <div style="background: #131823; padding: 30px; border-radius: 10px; border: 1px solid #2962FF; max-width: 400px; text-align: center; position: relative;">
-            <i class="fa-solid fa-xmark" id="closeModal" style="position: absolute; top: 15px; right: 15px; cursor: pointer; color: #8B94A7;"></i>
+        <div style="background: #131823; padding: 30px; border-radius: 10px; border: 1px solid #2962FF; max-width: 400px; width: 90%; text-align: center; position: relative;">
+            <i class="fa-solid fa-xmark" id="closeModal" style="position: absolute; top: 15px; right: 15px; cursor: pointer; color: #8B94A7; font-size: 20px;"></i>
             <i class="fa-solid fa-crown" style="font-size: 40px; color: #FFD700; margin-bottom: 15px;"></i>
-            <h2 style="margin-bottom: 10px;">Premium AI Signals</h2>
+            <h2 style="margin-bottom: 10px; color: white;">Premium AI Signals</h2>
             <p style="color: #8B94A7; font-size: 14px; margin-bottom: 20px;">Get real-time, high-accuracy AI signals delivered directly to your dashboard and Telegram.</p>
             
-            <!-- This is where the Shopify Buy Button will go later -->
-            <div id="shopify-button-container" style="background: #0B0E14; padding: 20px; border-radius: 8px; border: 1px dashed #8B94A7;">
-                <p style="color: #8B94A7; font-size: 12px;">Shopify Buy Button loading soon...</p>
+            <!-- THE SHOPIFY BUY BUTTON GOES HERE -->
+            <div id="shopify-button-container" style="display: flex; justify-content: center;">
+                <div id='product-component-1793902544829'></div>
             </div>
         </div>
     </div>
+
+    <!-- Shopify Script -->
+    <script type="text/javascript">
+    /*<![CDATA[*/
+    (function () {
+      var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
+      if (window.ShopifyBuy) {
+        if (window.ShopifyBuy.UI) {
+          ShopifyBuyInit();
+        } else {
+          loadScript();
+        }
+      } else {
+        loadScript();
+      }
+      function loadScript() {
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = scriptURL;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
+        script.onload = ShopifyBuyInit;
+      }
+      function ShopifyBuyInit() {
+        var client = ShopifyBuy.buildClient({
+          domain: '1gtfan-zv.myshopify.com',
+          storefrontAccessToken: 'f50bad474411328bb6bf644cb6309fab',
+        });
+        ShopifyBuy.UI.onReady(client).then(function (ui) {
+          ui.createComponent('product', {
+            id: '15487772819492',
+            node: document.getElementById('product-component-1793902544829'),
+            moneyFormat: '%24%7B%7Bamount%7D%7D',
+            options: {
+              "product": {
+                "styles": {
+                  "product": {
+                    "@media (min-width: 601px)": {
+                      "max-width": "100%",
+                      "margin-left": "0px",
+                      "margin-bottom": "0px"
+                    }
+                  }
+                },
+                "buttonDestination": "checkout",
+                "text": {
+                  "button": "Buy now"
+                }
+              },
+              "modalProduct": {
+                "contents": {
+                  "img": false,
+                  "imgWithCarousel": true,
+                  "button": false,
+                  "buttonWithQuantity": true
+                },
+                "styles": {
+                  "product": {
+                    "@media (min-width: 601px)": {
+                      "max-width": "100%",
+                      "margin-left": "0px",
+                      "margin-bottom": "0px"
+                    }
+                  }
+                },
+                "text": {
+                  "button": "Add to cart"
+                }
+              },
+              "option": {},
+              "cart": {
+                "text": {
+                  "total": "Subtotal",
+                  "button": "Checkout"
+                }
+              },
+              "toggle": {}
+            },
+          });
+        });
+      }
+    })();
+    /*]]>*/
+    </script>
 
     <script src="script.js"></script>
 </body>
