@@ -1,44 +1,35 @@
 // ========================================
-// TradePro Dashboard — Real Live Market Data
+// TradePro Dashboard — Cleaned UI & Real Data
 // ========================================
 
-// Your Render Backend URL
 const BACKEND_URL = "https://tradepro-backend-d4zt.onrender.com";
-
-// State
 const state = { price: 0 };
 let canvas, ctx, chartData = [];
 
-// ================================
 // 1. Fetch Real Data from Backend
-// ================================
 async function fetchLiveData() {
     try {
         const response = await fetch(`${BACKEND_URL}/api/market-data`);
         if (!response.ok) throw new Error("Backend not ready");
         
         const data = await response.json();
-        chartData = data; // Update global data
+        chartData = data; 
         
-        // Set state price to the latest close price
         if (chartData.length > 0) {
             state.price = chartData[chartData.length - 1].close;
             const marker = document.querySelector('.price-marker');
             if (marker) marker.textContent = state.price.toFixed(2);
         }
-        
         drawChart();
     } catch (error) {
         console.error("Failed to load market data:", error);
-        // If backend is asleep, generate temporary data so chart doesn't break
         if (chartData.length === 0) generateFallbackData();
     }
 }
 
-// Fallback in case backend is waking up
 function generateFallbackData() {
     chartData = [];
-    let base = 65000; // Approximate BTC price
+    let base = 76000; 
     for (let i = 0; i < 40; i++) {
         const open = base;
         const close = open + (Math.random() - 0.5) * 100;
@@ -50,12 +41,9 @@ function generateFallbackData() {
     drawChart();
 }
 
-// ================================
-// 2. Draw Chart
-// ================================
+// 2. Draw Canvas Chart
 function drawChart() {
     if (!canvas || !ctx || chartData.length === 0) return;
-    
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.parentElement.getBoundingClientRect();
     canvas.width = rect.width * dpr;
@@ -65,7 +53,6 @@ function drawChart() {
     const height = rect.height;
     ctx.clearRect(0, 0, width, height);
     
-    // Draw Grid
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
     for (let i = 0; i < width; i += 50) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, height); ctx.stroke(); }
     for (let i = 0; i < height; i += 50) { ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(width, i); ctx.stroke(); }
@@ -77,7 +64,6 @@ function drawChart() {
     const range = max - min;
     const candleWidth = (width - 40) / chartData.length;
 
-    // Draw Candles
     chartData.forEach((candle, index) => {
         const x = 20 + (index * candleWidth) + (candleWidth / 2);
         const yHigh = height - ((candle.high - min) / range) * height;
@@ -99,16 +85,11 @@ function initCustomChart() {
     if (!canvas) return;
     canvas.innerHTML = '<canvas style="width: 100%; height: 100%;"></canvas>';
     ctx = canvas.querySelector('canvas').getContext('2d');
-    
-    // Fetch initial data
     fetchLiveData();
-    
     window.addEventListener('resize', drawChart);
 }
 
-// ================================
 // 3. AI Chat
-// ================================
 const chatInput = document.getElementById('chatInput');
 const chatSend = document.getElementById('chatSend');
 const chatLog = document.getElementById('chatLog');
@@ -124,7 +105,6 @@ async function sendChat() {
     if (!chatInput || !chatInput.value.trim()) return;
     const userText = chatInput.value.trim();
     chatInput.value = '';
-    
     appendBubble(userText, 'user');
     const typingId = 'typing-' + Date.now();
     chatLog.innerHTML += `<div id="${typingId}" class="chat-message bot"><span class="chat-avatar">🤖</span><div class="chat-text">Thinking...</div></div>`;
@@ -136,46 +116,53 @@ async function sendChat() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: userText })
         });
-        
         const data = await response.json();
         document.getElementById(typingId)?.remove();
-        
         if (data.error) appendBubble('❌ Error: ' + data.error, 'bot');
         else if (data.choices && data.choices[0]) appendBubble(data.choices[0].message.content, 'bot');
-        else appendBubble('❌ Unexpected response from AI.', 'bot');
+        else appendBubble('❌ Unexpected response.', 'bot');
     } catch (error) {
         document.getElementById(typingId)?.remove();
-        appendBubble('❌ Failed to connect. Backend may be waking up (wait 30s).', 'bot');
+        appendBubble('❌ Failed to connect. Server may be waking up (wait 30s).', 'bot');
     }
 }
 
 if (chatSend) chatSend.addEventListener('click', sendChat);
 if (chatInput) chatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); sendChat(); } });
 
-// ================================
-// 4. Trade Buttons
-// ================================
+// 4. Trade Buttons & Modal Logic
 document.getElementById('btnDeposit')?.addEventListener('click', () => {
     const bal = document.getElementById('accountBalance');
     if (bal) bal.textContent = "$1,500.00";
 });
 document.getElementById('btnCall')?.addEventListener('click', () => {
     const tbody = document.getElementById('tradesBody');
-    if (tbody) tbody.innerHTML = `<tr><td>BTC/USDT</td><td style="color:#00C076">Call</td><td>$50</td><td>${state.price.toFixed(2)}</td><td class="live-price">${state.price.toFixed(2)}</td><td><span style="color:#00C076">In Progress</span></td></tr>` + tbody.innerHTML;
+    if (tbody) tbody.innerHTML = `<tr><td>BTC/USD</td><td style="color:#00C076">Call</td><td>$50</td><td>${state.price.toFixed(2)}</td><td class="live-price">${state.price.toFixed(2)}</td><td><span style="color:#00C076">In Progress</span></td></tr>` + tbody.innerHTML;
 });
 document.getElementById('btnPut')?.addEventListener('click', () => {
     const tbody = document.getElementById('tradesBody');
-    if (tbody) tbody.innerHTML = `<tr><td>BTC/USDT</td><td style="color:#FF3B30">Put</td><td>$50</td><td>${state.price.toFixed(2)}</td><td class="live-price">${state.price.toFixed(2)}</td><td><span style="color:#00C076">In Progress</span></td></tr>` + tbody.innerHTML;
+    if (tbody) tbody.innerHTML = `<tr><td>BTC/USD</td><td style="color:#FF3B30">Put</td><td>$50</td><td>${state.price.toFixed(2)}</td><td class="live-price">${state.price.toFixed(2)}</td><td><span style="color:#00C076">In Progress</span></td></tr>` + tbody.innerHTML;
 });
 
-// ================================
+// Modal Logic
+const modal = document.getElementById('premiumModal');
+const btnBuy = document.getElementById('btnBuySignals');
+const closeModal = document.getElementById('closeModal');
+
+if (btnBuy) {
+    btnBuy.addEventListener('click', () => {
+        modal.style.display = 'flex';
+    });
+}
+if (closeModal) {
+    closeModal.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+}
+
 // 5. Init
-// ================================
 window.addEventListener('load', () => {
     setTimeout(initCustomChart, 200);
-    
-    // Refresh data every 10 seconds to keep it live
     setInterval(fetchLiveData, 10000); 
-    
-    setTimeout(() => appendBubble('Hi! I\'m connected to real-time Binance data. Ask me anything!', 'bot'), 500);
+    setTimeout(() => appendBubble('Hi! I\'m connected to real-time market data. Ask me anything!', 'bot'), 500);
 });
