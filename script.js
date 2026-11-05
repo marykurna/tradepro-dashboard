@@ -1,12 +1,11 @@
 // ========================================
-// TradePro Dashboard — Real AI Chat
+// TradePro Dashboard — Real AI Chat (Secure Backend)
 // ========================================
 
 // ================================
-// 1. AI Configuration (OpenRouter)
+// 1. AI Configuration (Connected to Render Backend)
 // ================================
-const OPENAI_API_KEY = "YOUR_KEY_HERE"; // <--- PASTE YOUR KEY HERE
-const OPENAI_API_URL = "https://openrouter.ai/api/v1/chat/completions";
+const OPENAI_API_URL = "https://tradepro-backend-d4zt.onrender.com/api/chat";
 
 // ================================
 // 2. State
@@ -94,7 +93,7 @@ function tick() {
 }
 
 // ================================
-// 5. REAL AI CHAT
+// 5. REAL AI CHAT (Connected to Backend)
 // ================================
 const chatInput = document.getElementById('chatInput');
 const chatSend = document.getElementById('chatSend');
@@ -119,34 +118,26 @@ async function sendChat() {
     chatLog.scrollTop = chatLog.scrollHeight;
     
     try {
+        // Calls your secure backend
         const response = await fetch(OPENAI_API_URL, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${OPENAI_API_KEY}`
-            },
-            body: JSON.stringify({
-             model: 'openrouter/free',
-                messages: [
-                    { role: 'system', content: 'You are a helpful trading assistant for a platform called TradePro. Answer in under 3 sentences. Be friendly and use trading terminology.' },
-                    { role: 'user', content: userText }
-                ]
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: userText })
         });
         
         const data = await response.json();
         document.getElementById(typingId)?.remove();
         
         if (data.error) {
-            appendBubble('❌ Error: ' + data.error.message, 'bot');
+            appendBubble('❌ Error: ' + data.error, 'bot');
         } else if (data.choices && data.choices[0]) {
             appendBubble(data.choices[0].message.content, 'bot');
         } else {
-            appendBubble('❌ Unexpected response from AI.', 'bot');
+            appendBubble('❌ Unexpected response from backend.', 'bot');
         }
     } catch (error) {
         document.getElementById(typingId)?.remove();
-        appendBubble('❌ Failed to connect. Check your API key and internet.', 'bot');
+        appendBubble('❌ Failed to connect. The free server may be asleep (wait 30s and try again).', 'bot');
         console.error('Chat error:', error);
     }
 }
@@ -176,5 +167,5 @@ document.getElementById('btnPut')?.addEventListener('click', () => {
 window.addEventListener('load', () => {
     setTimeout(initCustomChart, 200);
     setInterval(tick, 2000);
-    setTimeout(() => appendBubble('Hi! I\'m your real AI trading assistant. Ask me anything about trading, crypto, or markets!', 'bot'), 500);
+    setTimeout(() => appendBubble('Hi! I\'m your secure AI trading assistant. Ask me anything about trading!', 'bot'), 500);
 });
